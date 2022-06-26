@@ -8,7 +8,7 @@
     "assignees": ["auricom"],
     "onboarding": false,
     "requireConfig": false,
-    "gitAuthor": "feisar-bot <27022259+feisar-bot[bot]@users.noreply.github.com>",
+    "gitAuthor": "feisar-bot <feisar-bot[bot]@users.noreply.github.com>",
     "dependencyDashboardTitle": "Renovate Dashboard 🤖",
     "suppressNotifications": [
       "prIgnoreNotification"
@@ -17,10 +17,17 @@
     "packageRules": [
       {
         "description": "Auto-merge Ubuntu base updates",
-        "matchDatasources": ["docker"],
+        "matchDatasources": [
+          "docker",
+          "github-tags"
+        ],
         "automerge": true,
         "automergeType": "branch",
         "requiredStatusChecks": null,
+        "matchUpdateTypes": [
+          "minor",
+          "patch"
+        ],
         "matchPackageNames": [
           "ghcr.io/k8s-at-home/ubuntu-jammy",
           "renovatebot/github-action"
