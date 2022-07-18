@@ -28,6 +28,8 @@ RUN \
   chmod -R u=rwX,go=rX /app && \
   printf "umask %d" "${UMASK}" >> /etc/bash.bashrc
 
+RUN groupmod -g 1000 kah && usermod -u 1000 -g 1000 kah
+
 LABEL \
   org.opencontainers.image.title="freac" \
   org.opencontainers.image.description="fre:ac command line for k8s" \
