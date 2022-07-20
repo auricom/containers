@@ -1,4 +1,4 @@
-FROM ghcr.io/k8s-at-home/kubectl:v1.24.1@sha256:908fa0166aa250e0d70716fc7694623173a49681281697c8cedb5d29eeb2c540
+FROM ghcr.io/k8s-at-home/kubectl:v1.24.3@sha256:92c52efe8a94a19ffb27f5534f7b000999558fb6908dee5d8b50104590b795a5
 
 RUN \
   apt-get -qq update \
