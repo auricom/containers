@@ -1,4 +1,4 @@
-FROM ghcr.io/k8s-at-home/ubuntu-jammy:rolling@sha256:d07c99ab3a87b76e4a8460d5d6c2c3ff18d55c20f84e777aa3c2db698e1db075
+FROM ghcr.io/onedr0p/ubuntu:rolling@sha256:a3f50b8f3603708774e6450e0601499ad41f1720fe516c3e1ed660a9baa13eb9 
 
 ARG VERSION
 USER root

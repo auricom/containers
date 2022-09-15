@@ -1,19 +1,10 @@
-FROM ghcr.io/k8s-at-home/kubectl:v1.25.0@sha256:8d21a039342d0e87f456dc25dfb5b4d4ded4452c87aee82de82b77dca7629a31
+FROM ghcr.io/onedr0p/kubernetes-kubectl:1.25.1@sha256:15db7764acb67a55dcf5977ef5d8c145f6d2ce830c9065a7e5223f7564246c80
 
 RUN \
-  apt-get -qq update \
-  && \
-  apt-get -qq install -y \
-  openssh-client \
-  && apt-get clean \
-  && \
+  apk add --no-cache --upgrade \
+    openssh \
   rm -rf \
-    /tmp/* \
-    /var/lib/apt/lists/* \
-    /var/tmp/
+    /root/.cache \
+    /tmp/*
 
-LABEL \
-  org.opencontainers.image.title="kubectl" \
-  org.opencontainers.image.description="kubectl for k8s jobs" \
-  org.opencontainers.image.source="https://github.com/k8s-at-home/container-images/blob/main/apps/kubectl" \
-  org.opencontainers.image.version="${VERSION}"
+LABEL org.opencontainers.image.source="https://github.com/kubernetes/kubectl"
