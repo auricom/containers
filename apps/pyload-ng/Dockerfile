@@ -48,7 +48,7 @@ COPY ./apps/pyload-ng/entrypoint.sh /entrypoint.sh
 
 CMD ["/entrypoint.sh"]
 
-EXPOSE 80
+EXPOSE 8000
 
 VOLUME /config
 VOLUME /downloads
