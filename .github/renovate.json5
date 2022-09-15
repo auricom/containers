@@ -4,19 +4,20 @@
     ],
     "platform": "github",
     "username": "feisar-bot[bot]",
-    "repositories": ["auricom/container-images"],
+    "repositories": ["auricom/containers"],
     "assignees": ["auricom"],
     "onboarding": false,
     "requireConfig": false,
     "gitAuthor": "feisar-bot <feisar-bot[bot]@users.noreply.github.com>",
     "dependencyDashboardTitle": "Renovate Dashboard 🤖",
+    "commitMessagePrefix": "⬆️",
     "suppressNotifications": [
       "prIgnoreNotification"
     ],
     "rebaseWhen": "conflicted",
     "packageRules": [
       {
-        "description": "Auto-merge Ubuntu base updates",
+        "description": "Auto-merge Alpine base updates",
         "matchDatasources": [
           "docker",
           "github-tags"
@@ -26,10 +27,11 @@
         "requiredStatusChecks": null,
         "matchUpdateTypes": [
           "minor",
-          "patch"
+          "patch",
+          "digest"
         ],
         "matchPackageNames": [
-          "ghcr.io/k8s-at-home/ubuntu-jammy",
+          "ghcr.io/onedr0p/alpine",
           "renovatebot/github-action"
         ]
       }
