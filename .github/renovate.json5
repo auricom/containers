@@ -27,13 +27,21 @@
         "requiredStatusChecks": null,
         "matchUpdateTypes": [
           "minor",
-          "patch",
-          "digest"
+          "patch"
         ],
         "matchPackageNames": [
           "ghcr.io/onedr0p/alpine",
           "renovatebot/github-action"
         ]
+      },
+      {
+        "description": "Auto-merge container digests",
+        "matchDatasources": ["docker"],
+        "automerge": true,
+        "automergeType": "branch",
+        "requiredStatusChecks": null,
+        "matchUpdateTypes": ["digest"],
+        "matchPackagePatterns": ["ghcr.io/onedr0p", "ghcr.io/auricom"]
       }
     ]
   }
