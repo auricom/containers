@@ -1,10 +1,11 @@
 FROM rust:alpine  AS builder
 
+ARG VERSION
 # hadolint ignore=DL3018
 RUN apk add --no-cache musl-dev git
 
 RUN \
-  git clone --depth 1 --branch "v0.23.1" -c advice.detachedHead=false https://github.com/libreddit/libreddit.git /app && \
+  git clone --depth 1 --branch "v${VERSION}" -c advice.detachedHead=false https://github.com/libreddit/libreddit.git /app && \
   cd /app && \
   cargo build --target x86_64-unknown-linux-musl --release
 
