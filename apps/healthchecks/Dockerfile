@@ -30,6 +30,7 @@ RUN \
   apk add --no-cache --upgrade --virtual .build-deps \
     cargo \
     curl \
+    curl-dev \
     gcc \
     jpeg-dev \
     libffi-dev \
