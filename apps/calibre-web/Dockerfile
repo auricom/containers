@@ -64,4 +64,6 @@ COPY ./apps/calibre-web/entrypoint.sh /entrypoint.sh
 
 USER kah
 
+EXPOSE 8083
+
 CMD ["/entrypoint.sh"]

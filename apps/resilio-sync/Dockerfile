@@ -27,6 +27,7 @@ RUN \
 
 USER kah
 
+COPY ./apps/resilio-sync/sync.conf /config/sync.conf
 COPY ./apps/resilio-sync/entrypoint.sh /entrypoint.sh
 
 CMD ["/entrypoint.sh"]
