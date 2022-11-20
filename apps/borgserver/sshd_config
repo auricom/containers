@@ -25,3 +25,5 @@ PermitTTY no
 PrintMotd no
 PermitTunnel no
 Subsystem	sftp	/bin/false
+
+PidFile /tmp/sshd.pid

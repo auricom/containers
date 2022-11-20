@@ -23,6 +23,7 @@ RUN \
     --group \
     --system \
     --disabled-password \
+    --shell /bin/bash \
   && \
   chown -R borg:borg /app && \
   chmod -R 775 /app && \
@@ -30,7 +31,8 @@ RUN \
   chmod -R 775 /config && \
   mkdir -p /home/borg/.ssh && \
   chown -R borg:borg /home/borg && \
-  chmod -R 775 /home/borg
+  chmod -R 775 /home/borg && \
+  chmod -R 777 /run
 
 USER borg
 
