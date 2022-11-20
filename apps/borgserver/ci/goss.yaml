@@ -7,5 +7,9 @@ process:
 # https://github.com/aelsabbahy/goss/blob/master/docs/manual.md#port
 port:
   # https://github.com/aelsabbahy/goss/issues/149
-  tcp:22:
+  tcp:22222:
     listening: true
+
+file:
+  /usr/local/bin/borg:
+    exists: true

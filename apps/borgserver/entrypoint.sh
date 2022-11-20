@@ -7,14 +7,14 @@ BORG_DATA_DIR=/app
 SSH_KEY_DIR=/config
 BORG_CMD='cd ${BORG_DATA_DIR}/${client_name}; borg serve --restrict-to-path ${BORG_DATA_DIR}/${client_name} ${BORG_SERVE_ARGS}'
 AUTHORIZED_KEYS_PATH=/home/borg/.ssh/authorized_keys
-BORG_VERSION=$(borg -V)
 
 # Append only mode?
 BORG_APPEND_ONLY=${BORG_APPEND_ONLY:=no}
 
 source /etc/os-release
 echo "########################################################"
-echo -n " * BorgServer powered by ${BORG_VERSION}"
+echo -n " * BorgServer powered by "
+borg -V
 echo " * Based on ${PRETTY_NAME}"
 echo "########################################################"
 echo " * User  id: $(id -u borg)"
