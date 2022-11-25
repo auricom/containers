@@ -1,4 +1,4 @@
-FROM ghcr.io/onedr0p/alpine:rolling@sha256:236a079145da5ce82269346534cacc8483ddaa8ff1aa4feaaf3a1bf6fb4d1cda
+FROM ghcr.io/onedr0p/alpine:rolling@sha256:4aa9bf81b468ac839a40e4916e0705f087472bcc5eb027d008b81543ab984f8c
 
 ARG VERSION
 
