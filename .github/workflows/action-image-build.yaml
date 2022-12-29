@@ -116,7 +116,7 @@ jobs:
           cue vet --schema '#Spec' ./apps/${{ matrix.image.app }}/metadata.json ./metadata.rules.cue
       - name: Build all platforms
         id: build_image
-        uses: redhat-actions/buildah-build@v2.10
+        uses: redhat-actions/buildah-build@v2.11
         with:
           build-args: |-
             VERSION=${{ steps.vars.outputs.chan_upstream_version }}
