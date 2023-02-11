@@ -9,7 +9,7 @@ RUN \
   cd /app && \
   cargo build --target x86_64-unknown-linux-musl --release
 
-FROM ghcr.io/onedr0p/alpine:rolling@sha256:e8ef8dfe8682db795944aeca61b456e684754e8ca0b78a29849adc1e9bad86bc
+FROM ghcr.io/onedr0p/alpine:rolling@sha256:022108430d7b563b86731c2ab9e5f1f07a8e2520024314c446117e20729dba47
 
 COPY --from=builder /usr/share/ca-certificates /usr/share/ca-certificates
 COPY --from=builder /etc/ssl/certs /etc/ssl/certs
