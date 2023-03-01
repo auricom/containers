@@ -1,4 +1,4 @@
-FROM ghcr.io/onedr0p/ubuntu:rolling@sha256:08aa98da190f8ed9c97a1bdd3a0bda6db70b9a4deee2d9546b976db59553a950 
+FROM ghcr.io/onedr0p/ubuntu:rolling@sha256:314ab04aebda63a48a0f3b8bb3e394d4b925ebc963436fc497d504c53f872555 
 
 ARG VERSION
 
