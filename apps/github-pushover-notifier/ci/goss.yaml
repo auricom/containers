@@ -1,0 +1,4 @@
+---
+file:
+  /app/github_pushover_notifier.py:
+    exists: true
