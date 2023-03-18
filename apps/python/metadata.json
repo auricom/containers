@@ -1,5 +1,5 @@
 {
-  "app": "github-pushover-notifier",
+  "app": "python",
   "base": false,
   "channels": [
     {

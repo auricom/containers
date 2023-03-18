@@ -16,7 +16,7 @@ USER kah
 WORKDIR /app
 
 # Copy the current directory contents into the container at /app
-COPY ./apps/github-pushover-notifier/requirements.txt /app
+COPY ./apps/python/requirements.txt /app
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
