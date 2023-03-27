@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-printf "rolling"
+printf "1.0.0"
