@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM ghcr.io/onedr0p/alpine:rolling@sha256:1a3a8f49db4be156f42e73890e6b42c453f956396e857e3278fa4edf5670e229 AS build
+FROM ghcr.io/onedr0p/alpine:rolling@sha256:e6a2407a15b7e557fb6617a592f672b004b6764887438502c047a567ec616e40 AS build
 
 ARG VERSION
 
@@ -46,7 +46,7 @@ RUN \
   venv/bin/pip install -r requirements.txt --no-cache-dir && \
   chmod +x /app/boot.sh
 
-FROM ghcr.io/onedr0p/alpine:rolling@sha256:1a3a8f49db4be156f42e73890e6b42c453f956396e857e3278fa4edf5670e229 AS runtime
+FROM ghcr.io/onedr0p/alpine:rolling@sha256:e6a2407a15b7e557fb6617a592f672b004b6764887438502c047a567ec616e40 AS runtime
 
 COPY --from=build /usr/local /usr/local
 COPY --from=build /app /app
