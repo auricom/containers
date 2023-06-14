@@ -1,4 +1,4 @@
-FROM ghcr.io/onedr0p/rclone:1.62.2@sha256:079049001bd5a072b0d52ace8b7ab605bb37e33bbc7298abcfeed6a6c01e1de4
+FROM ghcr.io/onedr0p/rclone:1.62.2@sha256:6f39624a9d012af2cbd471dc9c3617e42fadb016d4cb4716d6dbeee1e3d95b76
 
 USER root
 
