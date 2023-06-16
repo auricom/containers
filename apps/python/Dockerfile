@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM ghcr.io/onedr0p/ubuntu:rolling@sha256:5611f930d6f1fed0731748a889016b031d34d875c6771c6972d314f356c2a23f
+FROM ghcr.io/onedr0p/ubuntu:rolling@sha256:125ae4a56b01e2e6a496409f6880cbb972cad8191fcdbc0e3bf46f2ce70ee660
 
 USER root
 
