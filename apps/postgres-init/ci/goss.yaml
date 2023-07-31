@@ -1,0 +1,4 @@
+---
+file:
+  /usr/libexec/postgresql15/psql:
+    exists: true
