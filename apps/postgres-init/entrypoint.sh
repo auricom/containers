@@ -56,4 +56,9 @@ for dbname in ${INIT_POSTGRES_DBNAME}; do
     fi
     printf "\e[1;32m%-6s\e[m\n" "Update User Privileges on Database ..."
     psql --command "grant all privileges on database \"${dbname}\" to \"${INIT_POSTGRES_USER}\";"
+
+    if [[ "${INIT_GRANT_SCHEMA_PUBLIC}" = "true" ]]; then
+        printf "\e[1;32m%-6s\e[m\n" "Grant all privileges on public schema ..."
+        psql --dbname ${INIT_POSTGRES_DBNAME} --command "GRANT ALL ON SCHEMA public TO \"${INIT_POSTGRES_USER}\";"
+    fi
 done
