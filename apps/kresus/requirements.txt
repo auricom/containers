@@ -1,0 +1,7 @@
+BeautifulSoup4
+simplejson
+pdfminer.six
+Pillow
+PyExecJS
+typing-extensions
+woob==3.6
