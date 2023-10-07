@@ -1,4 +1,4 @@
-FROM ghcr.io/onedr0p/kubernetes-kubectl:1.28.2@sha256:87b2a4ea4dd9bc5666f260e07949456883aedc7e8d16fab396e92a27197c8ed2
+FROM ghcr.io/onedr0p/kubernetes-kubectl:1.28.2@sha256:d53b64e663d8bde3615007210b728653372c8e31b75ed9b82d6a63de3d662d39
 
 USER root
 
