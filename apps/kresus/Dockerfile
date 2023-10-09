@@ -3,6 +3,7 @@ FROM ghcr.io/onedr0p/ubuntu:rolling@sha256:defe5e1d3d576d7df31ee7cb252509bff1127
 ARG VERSION
 
 ENV NVM_DIR /app/.nvm
+ENV WOOB_GIT true
 
 WORKDIR /app
 
@@ -19,6 +20,7 @@ RUN \
     libnss3-tools \
     python3-nss \
     rustc \
+    git \
     build-essential && \
   pip install --upgrade --no-cache-dir \
     pip \
@@ -26,6 +28,8 @@ RUN \
   pip install --no-cache-dir --trusted-host pypi.python.org -r /tmp/requirements.txt && \
   locale-gen C.UTF-8 && \
   update-locale C.UTF-8 && \
+  echo "**** install woob from git ****" && \
+  if [ $WOOB_GIT = "true" ]; then mkdir /woob && git clone --depth 1 https://gitlab.com/woob/woob.git /woob ; fi && \
   echo "**** install node.js ****" && \
   mkdir -p ${NVM_DIR} && \
   NODE_VERSION=$(curl -s https://nodejs.org/dist/index.json | jq -r '.[] | select(.lts) | .version' | sort -V | tail -n 1) && \
@@ -36,10 +40,11 @@ RUN \
   . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION} && \
   $NVM_DIR/versions/node/v$NODE_VERSION/bin/npm install --global yarn && \
   ln -s $(which node) /usr/bin/node && \
+  npm explore npm -g -- npm install node-gyp@latest && \
   echo "**** install kresus ****" && \
     yarn global add kresus@${VERSION} --prefix /app/kresus --production  && \
   echo "**** cleanup ****" && \
-  apt-get purge -y python3-pip rustc build-essential && \
+  apt-get purge -y python3-pip rustc git build-essential && \
   apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
   apt-get autoremove -y && \
   apt-get clean && \
