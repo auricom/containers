@@ -1,0 +1,15 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "(^|/|\\.)([Dd]ocker|[Cc]ontainer)file$",
+        "(^|/)([Dd]ocker|[Cc]ontainer)file[^/]*$"
+      ],
+      "matchStrings": [
+        "#\\srenovate:\\sdatasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s(ENV|ARG) .*?_VERSION=(?<currentValue>.*)\\s"
+      ]
+    }
+  ]
+}
