@@ -52,7 +52,7 @@ Each Image will be built with a `rolling` tag, along with tags specific to it's 
 Container | Channel | Image | Latest Tags
 --- | --- | --- | ---
 {% for image in app_images | sort(attribute="name") -%}
-[{{ image.name }}]({{ image.html_url }}) | {{ image.channel }} | ghcr.io/auricom/{{ image.name }} |
+[{{ image.name }}]({{ image.html_url }}) | {{ image.channel }} | ghcr.io/{{ image.owner }}/{{ image.name }} |
 {%- set space = joiner(" ") -%}
 {%- for tag in image.tags -%}
 {{ space() }}![{{ tag }}](https://img.shields.io/badge/{{ tag.replace("-", "--") }}-{% if tag == "latest" %}green{% else %}blue{% endif %}?style=flat-square)
@@ -100,4 +100,4 @@ Containers here can be **deprecated** at any point, this could be for any reason
 **Note**: Deprecated containers will remained published to this repo for 6 months after which they will be pruned.
 ## Credits
 
-A lot of inspiration and ideas are thanks to the hard work of [hotio.dev](https://hotio.dev/) and [linuxserver.io](https://www.linuxserver.io/) contributors.
+[onedr0p](https://github.com/onedr0p/containers)
