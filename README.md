@@ -19,10 +19,10 @@ We do take a similar approach but instead of appending a `-ls69` or `-r420` pref
 
 | Container                                          | Immutable |
 |----------------------------------------------------|-----------|
-| `ghcr.io/onedr0p/sonarr:rolling`                   | ❌         |
-| `ghcr.io/onedr0p/sonarr:3.0.8.1507`                | ❌         |
-| `ghcr.io/onedr0p/sonarr:rolling@sha256:8053...`    | ✅         |
-| `ghcr.io/onedr0p/sonarr:3.0.8.1507@sha256:8053...` | ✅         |
+| `ghcr.io/auricom/sonarr:rolling`                   | ❌         |
+| `ghcr.io/auricom/sonarr:3.0.8.1507`                | ❌         |
+| `ghcr.io/auricom/sonarr:rolling@sha256:8053...`    | ✅         |
+| `ghcr.io/auricom/sonarr:3.0.8.1507@sha256:8053...` | ✅         |
 
 _If pinning an image to the sha256 digest, tools like [Renovate](https://github.com/renovatebot/renovate) support updating the container on a digest or application version change._
 
@@ -104,4 +104,4 @@ Containers here can be **deprecated** at any point, this could be for any reason
 **Note**: Deprecated containers will remained published to this repo for 6 months after which they will be pruned.
 ## Credits
 
-A lot of inspiration and ideas are thanks to the hard work of [hotio.dev](https://hotio.dev/) and [linuxserver.io](https://www.linuxserver.io/) contributors.
+[onedr0p](https://github.com/onedr0p/containers)
