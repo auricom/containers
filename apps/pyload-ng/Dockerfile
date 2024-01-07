@@ -27,8 +27,8 @@ RUN \
     openssl-dev \
     python3-dev \
     zlib-dev && \
-  python3 -m ensurepip && \
-  rm -rf /usr/lib/python*/ensurepip && \
+  python3 -m venv /app/venv && \
+  . /app/venv/bin/activate && \
   pip3 install \
     setuptools \
     wheel && \
