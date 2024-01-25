@@ -4,6 +4,8 @@ USER root
 
 RUN \
   apk add --no-cache --upgrade \
+    exiftool \
+    fd \
     openssh && \
   rm -rf \
     /root/.cache \
