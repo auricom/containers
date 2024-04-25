@@ -1,33 +1,27 @@
-FROM ghcr.io/onedr0p/ubuntu:rolling@sha256:a79a3386914dfdf37d4d03173ab8bba51512305b3863ab178f2520ef27981083 
+FROM cgr.dev/chainguard/wolfi-base:latest@sha256:36e4b16af5c6f70e7eb71349f9c0341dd96a364ff04a4e0f352cb2a8389bf6f3
 
 ARG VERSION
 
 WORKDIR /app
 
-RUN \
-  apt-get -qq update && \
-  apt-get -qq install -y gnupg && \
-  echo "deb http://linux-packages.resilio.com/resilio-sync/deb resilio-sync non-free" | tee /etc/apt/sources.list.d/resilio-sync.list && \
-  curl --location https://linux-packages.resilio.com/resilio-sync/key.asc | apt-key add && \
-  apt-get -qq update && \
-  apt-get install -y --no-install-recommends \
-    resilio-sync=${VERSION}
+ADD https://download-cdn.resilio.com/${VERSION}/linux-x64/resilio-sync_x64.tar.gz /tmp/sync.tgz
+RUN tar -xf /tmp/sync.tgz -C /app rslsync && rm -f /tmp/sync.tgz
 
-RUN \
-  apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
-  apt-get autoremove -y && \
-  apt-get clean && \
-  rm -rf \
-    /tmp/* \
-    /var/lib/apt/lists/* \
-    /var/tmp/ && \
-  chown -R kah:kah /app && \
-  chmod -R u=rwX,go=rX /app && \
-  printf "umask %d" "${UMASK}" >> /etc/bash.bashrc
+# trunk-ignore(hadolint/DL3018)
+RUN apk update && \
+  apk add --no-cache \
+    libstdc++ \
+    tini && \
+  mkdir -p /config /sync && \
+  chown -R nonroot:nonroot /app /config /sync && \
+  chmod -R u=rwX,go=rX /app /config /sync
 
-USER kah
+USER nonroot
 
-COPY ./apps/resilio-sync/sync.conf /config/sync.conf
-COPY ./apps/resilio-sync/entrypoint.sh /entrypoint.sh
+COPY ./apps/resilio-sync/sync.conf /app/sync.conf
 
-CMD ["/entrypoint.sh"]
+EXPOSE 8888/tcp
+EXPOSE 55555/tcp
+EXPOSE 55555/udp
+
+CMD ["tini", "--", "/app/rslsync", "--nodaemon", "--config", "/app/sync.conf"]
