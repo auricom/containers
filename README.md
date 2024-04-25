@@ -60,7 +60,7 @@ Container | Channel | Image | Latest Tags
 [pyload-ng](https://github.com/auricom/containers/pkgs/container/pyload-ng) | stable | ghcr.io/auricom/pyload-ng |![0.5.0-b3.dev81](https://img.shields.io/badge/0.5.0--b3.dev81-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
 [python](https://github.com/auricom/containers/pkgs/container/python) | stable | ghcr.io/auricom/python |![1.0.0](https://img.shields.io/badge/1.0.0-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
 [rclone](https://github.com/auricom/containers/pkgs/container/rclone) | stable | ghcr.io/auricom/rclone |![1.62.2](https://img.shields.io/badge/1.62.2-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
-[resilio-sync](https://github.com/auricom/containers/pkgs/container/resilio-sync) | stable | ghcr.io/auricom/resilio-sync |![2.7.3.1381-1](https://img.shields.io/badge/2.7.3.1381--1-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
+[resilio-sync](https://github.com/auricom/containers/pkgs/container/resilio-sync) | stable | ghcr.io/auricom/resilio-sync |![2.7.3](https://img.shields.io/badge/2.7.3-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
 
 
 ## Contributing
