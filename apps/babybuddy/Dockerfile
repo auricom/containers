@@ -1,4 +1,4 @@
-FROM ghcr.io/onedr0p/ubuntu:rolling@sha256:a79a3386914dfdf37d4d03173ab8bba51512305b3863ab178f2520ef27981083 
+FROM cgr.dev/chainguard/wolfi-base:latest@sha256:36e4b16af5c6f70e7eb71349f9c0341dd96a364ff04a4e0f352cb2a8389bf6f3
 
 ARG VERSION
 
@@ -7,19 +7,20 @@ ENV DJANGO_SETTINGS_MODULE=babybuddy.settings.production
 WORKDIR /app
 
 RUN \
-  echo "**** install packages ****" && \
-  apt-get -qq update && \
-  apt-get -qq install -y \
+  apk update && \
+  apk add --no-cache \
+    bash \
+    libpq \
+    gcc \
+    glibc-dev \
+    openjpeg-dev \
+    python3-dev \
     python3 \
-    python3-pip \
-    uwsgi \
-    uwsgi-plugin-python3 \
-    libopenjp2-7-dev \
-    libpq-dev && \
-  echo "**** install babybuddy ****" && \
-  curl -o \
-    /tmp/babybuddy.tar.gz -L \
-    "https://github.com/babybuddy/babybuddy/archive/refs/tags/v${VERSION}.tar.gz" && \
+    py3-pip \
+    tini \
+    wget && \
+  wget --quiet --output-document /tmp/babybuddy.tar.gz \
+  https://github.com/babybuddy/babybuddy/archive/refs/tags/v${VERSION}.tar.gz && \
   mkdir -p /app/www/public && \
   tar xf \
     /tmp/babybuddy.tar.gz -C \
@@ -27,35 +28,31 @@ RUN \
   cd /app/www/public && \
   pip install -U --no-cache-dir \
     pip \
+    uwsgi \
     wheel && \
   pip install -U --no-cache-dir \
     -r requirements.txt && \
-  echo "**** symlinks ****" && \
   mkdir -p /config/{data,media}  && \
   rm -rf /app/www/public/{data,media}  && \
   ln -s /config/data /app/www/public/data  && \
   ln -s /config/media /app/www/public/media  && \
-  echo "**** cleanup ****" && \
-  apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
-  apt-get autoremove -y && \
-  apt-get clean && \
-  rm -rf \
-    /tmp/* \
-    /var/lib/apt/lists/* \
-    /var/tmp/
+  apk del \
+    libpq \
+    gcc \
+    glibc-dev \
+    openjpeg-dev \
+    python3-dev
 
 COPY ./apps/babybuddy/production.py /app/www/public/babybuddy/settings/production.py
+COPY ./apps/babybuddy/entrypoint.sh /entrypoint.sh
 
 RUN \
-  chown -R kah:kah /app && \
-  chmod -R u=rwX,go=rX /app && \
-  printf "umask %d" "${UMASK}" >> /etc/bash.bashrc
+  chown -R nonroot:nonroot /app && \
+  chmod -R u=rwX,go=rX /app
 
-USER kah
+USER nonroot
 
 EXPOSE 3000
-
-COPY ./apps/babybuddy/entrypoint.sh /entrypoint.sh
 
 VOLUME /config
 
