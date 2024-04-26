@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-#shellcheck disable=SC1091
-test -f "/scripts/umask.sh" && source "/scripts/umask.sh"
-
-#shellcheck disable=SC2086
 exec \
     uwsgi --http-socket 0.0.0.0:3000 \
     --chdir /app/www/public \
