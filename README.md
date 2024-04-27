@@ -59,6 +59,7 @@ Container | Channel | Image | Latest Tags
 [postgres-init](https://github.com/auricom/containers/pkgs/container/postgres-init) | stable | ghcr.io/auricom/postgres-init |![15.6](https://img.shields.io/badge/15.6-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
 [python](https://github.com/auricom/containers/pkgs/container/python) | stable | ghcr.io/auricom/python |![1.0.0](https://img.shields.io/badge/1.0.0-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
 [rclone](https://github.com/auricom/containers/pkgs/container/rclone) | stable | ghcr.io/auricom/rclone |![1.62.2](https://img.shields.io/badge/1.62.2-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
+[redlib](https://github.com/auricom/containers/pkgs/container/redlib) | stable | ghcr.io/auricom/redlib |![0.31.2](https://img.shields.io/badge/0.31.2-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
 [resilio-sync](https://github.com/auricom/containers/pkgs/container/resilio-sync) | stable | ghcr.io/auricom/resilio-sync |![2.7.3](https://img.shields.io/badge/2.7.3-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
 
 
