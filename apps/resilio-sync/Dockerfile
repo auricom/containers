@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard/wolfi-base:latest@sha256:36e4b16af5c6f70e7eb71349f9c0341dd96a364ff04a4e0f352cb2a8389bf6f3
+FROM cgr.dev/chainguard/wolfi-base:latest@sha256:2390110a7dcaaa2157420fe97811c9925578a3263405a1614432c88d8d36d1d3
 
 ARG VERSION
 
