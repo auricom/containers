@@ -16,11 +16,12 @@ RUN apk update && \
     tar -xf /tmp/filebrowser.tar.gz -C /app filebrowser && rm -f /tmp/filebrowser.tar.gz && \
   apk del wget && \
     mkdir -p /config && \
-  chown -R nonroot:nonroot /app /config && \
+  adduser -D -u 1000 core && \
+  chown -R core:core /app /config && \
   chmod -R u=rwX,go=rX /app /config && \
   chmod +x /healthcheck.sh
 
-USER nonroot
+USER core
 
 EXPOSE 8080/tcp
 
