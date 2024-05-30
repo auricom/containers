@@ -52,13 +52,13 @@ Each Image will be built with a `rolling` tag, along with tags specific to it's 
 Container | Channel | Image | Latest Tags
 --- | --- | --- | ---
 [babybuddy](https://github.com/auricom/containers/pkgs/container/babybuddy) | stable | ghcr.io/auricom/babybuddy |![2.4.0](https://img.shields.io/badge/2.4.0-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
-[caddy](https://github.com/auricom/containers/pkgs/container/caddy) | stable | ghcr.io/auricom/caddy |![2.7.6](https://img.shields.io/badge/2.7.6-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
+[caddy](https://github.com/auricom/containers/pkgs/container/caddy) | stable | ghcr.io/auricom/caddy |![2.8.0](https://img.shields.io/badge/2.8.0-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
 [filebrowser](https://github.com/auricom/containers/pkgs/container/filebrowser) | stable | ghcr.io/auricom/filebrowser |![2.30.0](https://img.shields.io/badge/2.30.0-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
 [freac](https://github.com/auricom/containers/pkgs/container/freac) | stable | ghcr.io/auricom/freac |![1.1.7](https://img.shields.io/badge/1.1.7-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
 [kresus](https://github.com/auricom/containers/pkgs/container/kresus) | stable | ghcr.io/auricom/kresus |![0.21.2](https://img.shields.io/badge/0.21.2-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
 [kubectl](https://github.com/auricom/containers/pkgs/container/kubectl) | stable | ghcr.io/auricom/kubectl |![1.29.2](https://img.shields.io/badge/1.29.2-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
 [rclone](https://github.com/auricom/containers/pkgs/container/rclone) | stable | ghcr.io/auricom/rclone |![1.62.2](https://img.shields.io/badge/1.62.2-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
-[redlib](https://github.com/auricom/containers/pkgs/container/redlib) | stable | ghcr.io/auricom/redlib |![0.31.2](https://img.shields.io/badge/0.31.2-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
+[redlib](https://github.com/auricom/containers/pkgs/container/redlib) | stable | ghcr.io/auricom/redlib |![0.34.0](https://img.shields.io/badge/0.34.0-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
 [resilio-sync](https://github.com/auricom/containers/pkgs/container/resilio-sync) | stable | ghcr.io/auricom/resilio-sync |![2.8.0](https://img.shields.io/badge/2.8.0-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
 
 
