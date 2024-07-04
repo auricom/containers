@@ -25,6 +25,6 @@ WORKDIR /app
 
 EXPOSE 8080
 
-HEALTHCHECK --interval=1m --timeout=3s CMD wget --spider --q http://localhost:8080/settings || exit 1
+HEALTHCHECK --interval=1m --timeout=3s CMD wget --spider --quiet http://localhost:8080/settings || exit 1
 
-CMD ["tini", "--", "/app/redlib"]
+CMD ["tini", "--", "/app/redlib", "--address", "0.0.0.0"]
