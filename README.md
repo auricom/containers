@@ -59,7 +59,7 @@ Container | Channel | Image | Latest Tags
 [kubectl](https://github.com/auricom/containers/pkgs/container/kubectl) | stable | ghcr.io/auricom/kubectl |![1.29.2](https://img.shields.io/badge/1.29.2-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
 [rclone](https://github.com/auricom/containers/pkgs/container/rclone) | stable | ghcr.io/auricom/rclone |![1.62.2](https://img.shields.io/badge/1.62.2-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
 [redlib](https://github.com/auricom/containers/pkgs/container/redlib) | stable | ghcr.io/auricom/redlib |![0.35.1](https://img.shields.io/badge/0.35.1-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
-[resilio-sync](https://github.com/auricom/containers/pkgs/container/resilio-sync) | stable | ghcr.io/auricom/resilio-sync |![2.8.1](https://img.shields.io/badge/2.8.1-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
+[resilio-sync](https://github.com/auricom/containers/pkgs/container/resilio-sync) | stable | ghcr.io/auricom/resilio-sync |![3.0.0](https://img.shields.io/badge/3.0.0-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
 
 
 ## Contributing
