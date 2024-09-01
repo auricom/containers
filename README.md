@@ -51,7 +51,7 @@ Each Image will be built with a `rolling` tag, along with tags specific to it's 
 
 Container | Channel | Image | Latest Tags
 --- | --- | --- | ---
-[babybuddy](https://github.com/auricom/containers/pkgs/container/babybuddy) | stable | ghcr.io/auricom/babybuddy |![2.5.0](https://img.shields.io/badge/2.5.0-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
+[babybuddy](https://github.com/auricom/containers/pkgs/container/babybuddy) | stable | ghcr.io/auricom/babybuddy |![2.6.0](https://img.shields.io/badge/2.6.0-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
 [caddy](https://github.com/auricom/containers/pkgs/container/caddy) | stable | ghcr.io/auricom/caddy |![2.8.4](https://img.shields.io/badge/2.8.4-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
 [filebrowser](https://github.com/auricom/containers/pkgs/container/filebrowser) | stable | ghcr.io/auricom/filebrowser |![2.31.1](https://img.shields.io/badge/2.31.1-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
 [freac](https://github.com/auricom/containers/pkgs/container/freac) | stable | ghcr.io/auricom/freac |![1.1.7](https://img.shields.io/badge/1.1.7-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
