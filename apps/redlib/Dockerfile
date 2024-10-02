@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard/rust:latest-dev@sha256:1ddad2e237417769399520fa32f4c95861b76d93a18a67993419184ff4f57554 as builder
+FROM cgr.dev/chainguard/rust:latest-dev@sha256:50098714d1d974f61584e535098459c0c6a5d9ca9ab88f4e6ae76f076d137805 as builder
 
 ARG VERSION
 
