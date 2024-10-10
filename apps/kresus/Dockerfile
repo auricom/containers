@@ -1,4 +1,4 @@
-FROM ghcr.io/onedr0p/ubuntu:rolling@sha256:a79a3386914dfdf37d4d03173ab8bba51512305b3863ab178f2520ef27981083 
+FROM ubuntu:rolling
 
 ARG VERSION
 
@@ -57,11 +57,11 @@ ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/bin
 ENV PATH $NODE_PATH:$PATH
 
 RUN \
-  chown -R kah:kah /app /config && \
+  chown -R ubuntu:ubuntu /app /config && \
   chmod -R u=rwX,go=rX /app /config && \
   printf "umask %d" "${UMASK}" >> /etc/bash.bashrc
 
-USER kah
+USER ubuntu
 
 EXPOSE 9876
 

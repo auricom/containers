@@ -1,16 +1,20 @@
-FROM ghcr.io/onedr0p/kubernetes-kubectl:1.29.2@sha256:6324f99979877f3ded7647f4efa4df6d73f11bb9d8302dc81ab4a5d38e406867
+FROM cgr.dev/chainguard/wolfi-base:latest@sha256:28f57f6a9fb2478f3a3dd160794831bd0099ec92d0d7b81cd203fae67bcb5339
+
+ARG VERSION
 
 USER root
 
 RUN \
-  apk add --no-cache --upgrade \
-    exiftool \
-    fd \
-    openssh && \
-  rm -rf \
-    /root/.cache \
-    /tmp/*
+    apk add --no-cache --upgrade \
+        exiftool \
+        fd \
+        kubectl-${VERSION} \
+        openssh && \
+    rm -rf \
+        /root/.cache \
+        /tmp/*
 
-USER kah
+USER nonroot
+CMD [ "/usr/local/bin/kubectl" ]
 
 LABEL org.opencontainers.image.source="https://github.com/kubernetes/kubectl"

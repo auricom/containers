@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
+file=/tmp/rclone.yaml
 
-version="$(curl -sX GET https://raw.githubusercontent.com/auricom/containers/main/apps/rclone/Dockerfile | head -n 1 | awk '{print $2}')"
-version="${version#*ghcr.io/onedr0p/rclone:}"
-version="${version%@*}"
-
+curl -fsSL -o "${file}" https://raw.githubusercontent.com/wolfi-dev/os/main/rclone.yaml
+version="$(yq .package.version ${file})"
+version="${version#*v}"
+version="${version#*release-}"
 printf "%s" "${version}"
+rm "${file}"
