@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: "Image Build"
 
 on:
@@ -7,11 +8,11 @@ on:
       appsToBuild:
         required: false
         type: string
-        default: ''
+        default: ""
       channelsToBuild:
         required: false
         type: string
-        default: ''
+        default: ""
       pushImages:
         required: false
         default: false
@@ -26,7 +27,7 @@ on:
         type: boolean
         description: Force rebuild
     secrets:
-      BOT_APP_ID:
+      BOT_CLIENT_ID:
         description: The App ID of the GitHub App
         required: true
       BOT_APP_PRIVATE_KEY:
@@ -42,29 +43,29 @@ jobs:
     steps:
       - name: Lowercase repository owner
         shell: bash
-        run: echo "LOWERCASE_REPO_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> "${GITHUB_ENV}"
+        run: echo "LOWERCASE_REPO_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
 
       - name: Generate Token
-        uses: actions/create-github-app-token@5d869da34e18e7287c1daad50e0b8ea0f506ce69 # v1.11.0
+        uses: actions/create-github-app-token@v1
         id: app-token
         with:
-          app-id: "${{ secrets.BOT_APP_ID }}"
+          app-id: "${{ secrets.BOT_CLIENT_ID }}"
           private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
 
       - name: Checkout
-        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        uses: actions/checkout@v4
         with:
           token: "${{ steps.app-token.outputs.token }}"
 
       - name: Setup Python
-        uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
+        uses: actions/setup-python@v5
         with:
           python-version: 3.x
           cache: pip
 
       - name: Install Python Requirements
         shell: bash
-        run: pip install -r ./.github/scripts/requirements.txt && pip freeze
+        run: pip install --requirement requirements.txt && pip freeze
 
       - name: Prepare Matrices
         id: prepare-matrices
@@ -73,13 +74,13 @@ jobs:
         shell: bash
         run: |
           if [[ -z "${{ inputs.appsToBuild }}" ]]; then
-              matrices=$(python ./.github/scripts/prepare-matrices.py "all" "${{ inputs.pushImages }}" "${{ inputs.force }}")
+              matrices=$(python ./scripts/prepare-matrices.py "all" "${{ inputs.pushImages }}" "${{ inputs.force }}")
           else
-            if [[ -z "${{ inputs.channelsToBuild }}" ]]; then
-              matrices=$(python ./.github/scripts/prepare-matrices.py "${{ inputs.appsToBuild }}" "${{ inputs.pushImages }}" "${{ inputs.force }}")
-            else
-              matrices=$(python ./.github/scripts/prepare-matrices.py "${{ inputs.appsToBuild }}" "${{ inputs.pushImages }}" "${{ inputs.force }}" "${{ inputs.channelsToBuild }}")
-            fi
+              if [[ -z "${{ inputs.channelsToBuild }}" ]]; then
+                  matrices=$(python ./scripts/prepare-matrices.py "${{ inputs.appsToBuild }}" "${{ inputs.pushImages }}" "${{ inputs.force }}")
+              else
+                  matrices=$(python ./scripts/prepare-matrices.py "${{ inputs.appsToBuild }}" "${{ inputs.pushImages }}" "${{ inputs.force }}" "${{ inputs.channelsToBuild }}")
+              fi
           fi
           echo "matrices=${matrices}" >> $GITHUB_OUTPUT
           echo "${matrices}"
@@ -92,7 +93,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: ["${{ fromJSON(needs.prepare.outputs.matrices).imagePlatforms }}"]
+        image:
+          ["${{ fromJSON(needs.prepare.outputs.matrices).imagePlatforms }}"]
     permissions:
       contents: read
       packages: write
@@ -107,6 +109,7 @@ jobs:
           cat << EOF
           ${{ toJSON(matrix.image)}}
           EOF
+
       - name: Validate Matrix Input
         shell: bash
         run: |
@@ -138,23 +141,22 @@ jobs:
           echo "${{ matrix.image.version }}" | grep -E "[a-zA-Z0-9_\.\-]+" || "Image Version is invalid"
 
       - name: Generate Token
-        uses: actions/create-github-app-token@5d869da34e18e7287c1daad50e0b8ea0f506ce69 # v1.11.0
+        uses: actions/create-github-app-token@v1
         id: app-token
         with:
-          app-id: "${{ secrets.BOT_APP_ID }}"
+          app-id: "${{ secrets.BOT_CLIENT_ID }}"
           private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
 
       - name: Checkout
-        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        uses: actions/checkout@v4
         with:
           token: "${{ steps.app-token.outputs.token }}"
-          fetch-depth: 1
 
       - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@c47758b77c9736f4b2ef4073d4d51994fabfe349 # v3.7.1
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: "${{ github.actor }}"
@@ -162,9 +164,9 @@ jobs:
 
       - name: Setup Goss
         if: ${{ matrix.image.tests_enabled }}
-        uses: e1himself/goss-installation-action@fbb6fb55d3e59c96045b2500eeb8ce0995d99ac1 # v1.2.1
+        uses: e1himself/goss-installation-action@v1
         with:
-          version: v0.4.4
+          version: latest
 
       - name: Prepare Build Outputs
         id: prepare-build-outputs
@@ -181,14 +183,15 @@ jobs:
           echo "outputs=${outputs}" >> $GITHUB_OUTPUT
 
       - name: Build Image
-        uses: docker/build-push-action@4f58ea79222b3b9dc2c8bbdd6debcef730109a75 # v6.9.0
+        uses: docker/build-push-action@v6
         id: build
         with:
           build-args: |-
             VERSION=${{ matrix.image.version }}
             REVISION=${{ github.sha }}
             CHANNEL=${{ matrix.image.channel }}
-          context: . # TODO: Use ${{ matrix.image.context }}, requires updates to all dockerfiles :-(
+          # TODO: Use ${{ matrix.image.context }}, requires updates to all dockerfiles :-(
+          context: .
           platforms: ${{ matrix.image.platform }}
           file: ${{ matrix.image.dockerfile }}
           outputs: ${{ steps.prepare-build-outputs.outputs.outputs }}
@@ -197,7 +200,6 @@ jobs:
           labels: |-
             org.opencontainers.image.title=${{ matrix.image.name }}
             org.opencontainers.image.url=https://ghcr.io/${{ env.LOWERCASE_REPO_OWNER }}/${{ matrix.image.name }}
-            org.opencontainers.image.source=https://github.com/${{ env.LOWERCASE_REPO_OWNER }}/containers
             org.opencontainers.image.version=${{ matrix.image.version }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.vendor=${{ env.LOWERCASE_REPO_OWNER }}
@@ -232,9 +234,9 @@ jobs:
 
       - name: Upload Digest
         if: ${{ inputs.pushImages}}
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.image.name }}
+          name: ${{ matrix.image.name }}-${{ matrix.image.target_os }}-${{ matrix.image.target_arch }}
           path: /tmp/${{ matrix.image.name }}/*
           if-no-files-found: error
           retention-days: 1
@@ -253,12 +255,13 @@ jobs:
     steps:
       - name: Lowercase repository owner
         shell: bash
-        run: echo "LOWERCASE_REPO_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> "${GITHUB_ENV}"
+        run: echo "LOWERCASE_REPO_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
 
       - name: Download Digests
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        uses: actions/download-artifact@v4
         with:
-          name: ${{ matrix.image.name }}
+          pattern: "${{ matrix.image.name }}-{linux,darwin}-{amd64,arm64}"
+          merge-multiple: true
           path: /tmp/${{ matrix.image.name }}
 
       - name: Ensure all platforms were built
@@ -278,10 +281,10 @@ jobs:
           fi
 
       - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@c47758b77c9736f4b2ef4073d4d51994fabfe349 # v3.7.1
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: "${{ github.actor }}"
@@ -320,20 +323,11 @@ jobs:
 
       - name: Build failed
         id: build-failed
-        if: ${{ always() && (steps.merge.outcome == 'failure' || steps.inspect.outcome == 'failure' || steps.ensure-platforms.outcome == 'failure') }}
+        if: ${{ always() && (steps.merge.outcome == 'failure' || steps.inspect.outcome == 'failure') }}
         shell: bash
         run: |
           echo "message=💥 ${{ matrix.image.name }} (${{ matrix.image.tags[1] }})" >> $GITHUB_OUTPUT
           echo "color=0xFF0000" >> $GITHUB_OUTPUT
-
-      # - name: Send Discord Webhook
-      #   uses: sarisia/actions-status-discord@9904e3130b8905d5b973df25623f17672dcb3466 # v1.13.0
-      #   if: ${{ always() && inputs.sendNotifications == 'true' }}
-      #   with:
-      #     webhook: ${{ secrets.DISCORD_WEBHOOK }}
-      #     title: ${{ steps.build-failed.outputs.message || steps.build-success.outputs.message }}
-      #     color: ${{ steps.build-failed.outputs.color || steps.build-success.outputs.color }}
-      #     username: GitHub Actions
 
   # Summarize matrix https://github.community/t/status-check-for-a-matrix-jobs/127354/7
   build_success:

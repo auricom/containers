@@ -1,18 +1,19 @@
 #Spec: {
-	app:  #NonEmptyString
-	base: bool
-	channels: [...#Channels]
+    app: #AppName
+    semver?: bool
+    channels: [...#Channels]
 }
 
 #Channels: {
-	name: #NonEmptyString
-	platforms: [...#AcceptedPlatforms]
-	stable: bool
-	tests: {
-		enabled: bool
-		type?:   =~"^(cli|web)$"
-	}
+    name: #ChannelName
+    platforms: [...#Platforms]
+    stable: bool
+    tests: {
+        enabled: bool
+        type?:   =~"^(cli|web)$"
+    }
 }
 
-#NonEmptyString:           string & !=""
-#AcceptedPlatforms:        "linux/amd64" | "linux/arm64"
+#AppName:     string & !="" & =~"^[a-zA-Z0-9_-]+$"
+#ChannelName: string & !="" & =~"^[a-zA-Z0-9._-]+$"
+#Platforms:   "linux/amd64" | "linux/arm64"
