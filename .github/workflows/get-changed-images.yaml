@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: "Get Changed Images"
 
 on:
@@ -16,26 +17,31 @@ jobs:
     name: Get Changed Images
     runs-on: ubuntu-latest
     outputs:
-      addedOrModified: "${{ steps.filter.outputs.addedOrModified }}"
-      addedOrModifiedImages: "${{ steps.filter-containers.outputs.addedOrModifiedImages }}"
+      addedOrModified: "${{ steps.changed-files.outputs.all_changed_and_modified_files_count > 0 }}"
+      addedOrModifiedImages: "${{ steps.changed-containers.outputs.addedOrModifiedImages }}"
     steps:
       - name: Checkout
-        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
-
-      - name: Collect changed files
-        uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
-        id: filter
+        uses: actions/checkout@v4
         with:
-          list-files: json
-          filters: |
-            addedOrModified:
-              - added|modified: 'apps/*/**'
+          fetch-depth: 0
 
-      - name: Determine changed images
-        if: ${{ steps.filter.outputs.addedOrModified == 'true' }}
-        id: filter-containers
+      - name: Get Changed Files
+        id: changed-files
+        uses: tj-actions/changed-files@v45
+        with:
+          files: apps/**
+          dir_names: true
+          dir_names_max_depth: 2
+          json: true
+          escape_json: false
+
+      - if: ${{ steps.changed-files.outputs.all_changed_and_modified_files_count > 0 }}
+        name: Determine changed images
+        id: changed-containers
         shell: bash
         run: |
-          PATHS='${{ steps.filter.outputs.addedOrModified_files }}'
-          OUTPUT=$(echo $PATHS | jq --raw-output -c 'map(. |= split("/")[1]) | unique | join(",")')
-          echo "addedOrModifiedImages=${OUTPUT}" >> $GITHUB_OUTPUT
+          IMAGES=$( \
+              echo '${{ steps.changed-files.outputs.all_changed_and_modified_files }}' \
+                  | jq --raw-output 'map(sub("^apps/"; "")) | join(",")' \
+          )
+          echo "addedOrModifiedImages=${IMAGES}" >> $GITHUB_OUTPUT

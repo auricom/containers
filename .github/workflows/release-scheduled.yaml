@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: Scheduled Release
 
 concurrency:
@@ -24,12 +25,12 @@ on:
 jobs:
   simple-checks:
     name: Simple Checks
-    uses: ./.github/workflows/simple-checks.yaml
+    uses: auricom/containers/.github/workflows/simple-checks.yaml@main
 
   build-images:
     name: Build Images
     needs: simple-checks
-    uses: ./.github/workflows/build-images.yaml
+    uses: auricom/containers/.github/workflows/build-images.yaml@main
     secrets: inherit
     permissions:
       contents: read
