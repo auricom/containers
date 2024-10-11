@@ -1,6 +1,6 @@
 <!---
 NOTE: AUTO-GENERATED FILE
-to edit this file, instead edit its template at: ./github/scripts/templates/README.md.j2
+to edit this file, instead edit its template at: ./scripts/templates/README.md.j2
 -->
 <div align="center">
 
@@ -19,12 +19,53 @@ We do take a similar approach but instead of appending a `-ls69` or `-r420` pref
 
 | Container                                          | Immutable |
 |----------------------------------------------------|-----------|
-| `ghcr.io/auricom/sonarr:rolling`                   | ❌         |
-| `ghcr.io/auricom/sonarr:3.0.8.1507`                | ❌         |
-| `ghcr.io/auricom/sonarr:rolling@sha256:8053...`    | ✅         |
-| `ghcr.io/auricom/sonarr:3.0.8.1507@sha256:8053...` | ✅         |
+| `ghcr.io/onedr0p/sonarr:rolling`                   | ❌         |
+| `ghcr.io/onedr0p/sonarr:3.0.8.1507`                | ❌         |
+| `ghcr.io/onedr0p/sonarr:rolling@sha256:8053...`    | ✅         |
+| `ghcr.io/onedr0p/sonarr:3.0.8.1507@sha256:8053...` | ✅         |
 
 _If pinning an image to the sha256 digest, tools like [Renovate](https://github.com/renovatebot/renovate) support updating the container on a digest or application version change._
+
+## Rootless
+
+To run these containers as non-root make sure you update your configuration to the user and group you want.
+
+### Docker compose
+
+```yaml
+networks:
+  sonarr:
+    name: sonarr
+    external: true
+services:
+  sonarr:
+    image: ghcr.io/onedr0p/sonarr:3.0.8.1507
+    container_name: sonarr
+    user: 65534:65534
+    # ...
+```
+
+### Kubernetes
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarr
+# ...
+spec:
+  # ...
+  template:
+    # ...
+    spec:
+      # ...
+      securityContext:
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+# ...
+```
 
 ## Passing arguments to a application
 
@@ -32,11 +73,10 @@ Some applications do not support defining configuration via environment variable
 
 1. First read the Kubernetes docs on [defining command and arguments for a Container](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/).
 2. Look up the documentation for the application and find a argument you would like to set.
-3. Set the argument in the `args` section, be sure to include `entrypoint.sh` as the first arg and any application specific arguments thereafter.
+3. Set the extra arguments in the `args` section like below.
 
     ```yaml
     args:
-      - /entrypoint.sh
       - --port
       - "8080"
     ```
@@ -49,47 +89,18 @@ For applications that need to have persistent configuration data the config volu
 
 Each Image will be built with a `rolling` tag, along with tags specific to it's version. Available Images Below
 
-Container | Channel | Image | Latest Tags
---- | --- | --- | ---
-[babybuddy](https://github.com/auricom/containers/pkgs/container/babybuddy) | stable | ghcr.io/auricom/babybuddy |![2.6.0](https://img.shields.io/badge/2.6.0-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
-[caddy](https://github.com/auricom/containers/pkgs/container/caddy) | stable | ghcr.io/auricom/caddy |![2.8.4](https://img.shields.io/badge/2.8.4-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
-[filebrowser](https://github.com/auricom/containers/pkgs/container/filebrowser) | stable | ghcr.io/auricom/filebrowser |![2.31.2](https://img.shields.io/badge/2.31.2-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
-[freac](https://github.com/auricom/containers/pkgs/container/freac) | stable | ghcr.io/auricom/freac |![1.1.7](https://img.shields.io/badge/1.1.7-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
-[kresus](https://github.com/auricom/containers/pkgs/container/kresus) | stable | ghcr.io/auricom/kresus |![0.21.2](https://img.shields.io/badge/0.21.2-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
-[kubectl](https://github.com/auricom/containers/pkgs/container/kubectl) | stable | ghcr.io/auricom/kubectl |![1.29.2](https://img.shields.io/badge/1.29.2-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
-[rclone](https://github.com/auricom/containers/pkgs/container/rclone) | stable | ghcr.io/auricom/rclone |![1.62.2](https://img.shields.io/badge/1.62.2-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
-[redlib](https://github.com/auricom/containers/pkgs/container/redlib) | stable | ghcr.io/auricom/redlib |![0.35.1](https://img.shields.io/badge/0.35.1-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
-[resilio-sync](https://github.com/auricom/containers/pkgs/container/resilio-sync) | stable | ghcr.io/auricom/resilio-sync |![3.0.0](https://img.shields.io/badge/3.0.0-blue?style=flat-square) ![rolling](https://img.shields.io/badge/rolling-blue?style=flat-square)
+Container | Channel | Image
+--- | --- | ---
+[babybuddy](https://github.com/auricom/pkgs/container/babybuddy) | stable | ghcr.io/auricom/babybuddy
+[caddy](https://github.com/auricom/pkgs/container/caddy) | stable | ghcr.io/auricom/caddy
+[filebrowser](https://github.com/auricom/pkgs/container/filebrowser) | stable | ghcr.io/auricom/filebrowser
+[freac](https://github.com/auricom/pkgs/container/freac) | stable | ghcr.io/auricom/freac
+[kresus](https://github.com/auricom/pkgs/container/kresus) | stable | ghcr.io/auricom/kresus
+[kubectl](https://github.com/auricom/pkgs/container/kubectl) | stable | ghcr.io/auricom/kubectl
+[rclone](https://github.com/auricom/pkgs/container/rclone) | stable | ghcr.io/auricom/rclone
+[redlib](https://github.com/auricom/pkgs/container/redlib) | stable | ghcr.io/auricom/redlib
+[resilio-sync](https://github.com/auricom/pkgs/container/resilio-sync) | stable | ghcr.io/auricom/resilio-sync
 
-
-## Contributing
-
-1. Install [Docker](https://docs.docker.com/get-docker/), [Taskfile](https://taskfile.dev/) & [Cuelang](https://cuelang.org/)
-2. Get familiar with the structure of the repositroy
-3. Find a similar application in the apps directory
-4. Copy & Paste an application and update the directory name
-5. Update `metadata.json`, `Dockerfile`, `ci/latest.sh`, `ci/goss.yaml` and make it suit the application build
-6. Include any additional files if required
-7. Use Taskfile to build and test your image
-
-    ```ruby
-    task APP=sonarr CHANNEL=main test
-    ```
-
-### Automated tags
-
-Here's an example of how tags are created in the GitHub workflows, be careful with `metadata.json` as it does affect the outcome of how the tags will be created when the application is built.
-
-| Application | Channel   | Stable  | Base    | Generated Tag               |
-|-------------|-----------|---------|---------|-----------------------------|
-| `ubuntu`    | `focal`   | `true`  | `true`  | `ubuntu:focal-rolling`      |
-| `ubuntu`    | `focal`   | `true`  | `true`  | `ubuntu:focal-19880312`     |
-| `alpine`    | `3.16`    | `true`  | `true`  | `alpine:rolling`            |
-| `alpine`    | `3.16`    | `true`  | `true`  | `alpine:3.16.0`             |
-| `sonarr`    | `develop` | `false` | `false` | `sonarr-develop:3.0.8.1538` |
-| `sonarr`    | `develop` | `false` | `false` | `sonarr-develop:rolling`    |
-| `sonarr`    | `main`    | `true`  | `false` | `sonarr:3.0.8.1507`         |
-| `sonarr`    | `main`    | `true`  | `false` | `sonarr:rolling`            |
 
 ## Deprecations
 
@@ -101,6 +112,7 @@ Containers here can be **deprecated** at any point, this could be for any reason
 4. The **maintenance burden** of keeping the container here **is too bothersome**
 
 **Note**: Deprecated containers will remained published to this repo for 6 months after which they will be pruned.
+
 ## Credits
 
 [onedr0p](https://github.com/onedr0p/containers)
