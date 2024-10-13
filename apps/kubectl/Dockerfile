@@ -6,6 +6,8 @@ USER root
 
 RUN \
     apk add --no-cache --upgrade \
+        bash \
+        curl \
         exiftool \
         fd \
         kubectl-${VERSION}-default \

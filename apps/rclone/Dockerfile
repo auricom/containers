@@ -7,6 +7,8 @@ USER root
 RUN \
     apk add --no-cache \
         age \
+        bash \
+        curl \
         rclone=~${VERSION} && \
     rm -rf \
         /root/.cache \
