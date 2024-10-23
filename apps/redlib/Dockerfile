@@ -4,8 +4,12 @@ ARG VERSION
 
 WORKDIR /app
 
+# RUN \
+#   git clone --depth 1 --branch "v${VERSION}" -c advice.detachedHead=false https://github.com/redlib-org/redlib.git /app && \
+#   cargo build --release
+
 RUN \
-  git clone --depth 1 --branch "v${VERSION}" -c advice.detachedHead=false https://github.com/redlib-org/redlib.git /app && \
+  git clone https://github.com/redlib-org/redlib.git /app && cd /app && git checkout "${VERSION}" && \
   cargo build --release
 
 FROM cgr.dev/chainguard/wolfi-base:latest@sha256:1126b3b5c0926eb9fb7c631e1b305de550c8de629c5cdbdb72a9b332ab457ef9

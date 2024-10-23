@@ -1,6 +1,7 @@
 ---
 app: redlib
-semver: true
+# semver: true
+semver: false
 channels:
   - name: stable
     platforms: ["linux/amd64"]
