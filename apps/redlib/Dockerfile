@@ -9,17 +9,17 @@ WORKDIR /app
 #   cargo build --release
 
 RUN \
-  git clone https://github.com/redlib-org/redlib.git /app && cd /app && git checkout "${VERSION}" && \
-  cargo build --release
+    git clone https://github.com/redlib-org/redlib.git /app && cd /app && git checkout "${VERSION}" && \
+    cargo build --release
 
 FROM cgr.dev/chainguard/wolfi-base:latest@sha256:b3dd9cf08283b959c6a0a3c833e68b2882a50129930215060154b43ae6a3e81c
 
 # trunk-ignore(hadolint/DL3018)
 RUN apk update && \
-  apk add --no-cache \
-    libgcc \
-    tini \
-    wget
+    apk add --no-cache \
+        libgcc \
+        tini \
+        wget
 
 USER nonroot
 
