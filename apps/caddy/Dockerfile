@@ -16,7 +16,7 @@ RUN \
   go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest && \
   /root/go/bin/xcaddy build --with github.com/caddy-dns/ovh
 
-FROM cgr.dev/chainguard/wolfi-base:latest@sha256:56614cdca9ca3f091f18e594148e65427109a3c45f30d79263eecf4b711c5ae9
+FROM cgr.dev/chainguard/wolfi-base:latest@sha256:3b271f8bff9356a38aa23118ffdea3c0d659f39e207feedacf01bdea4b900871
 
 WORKDIR /app
 
