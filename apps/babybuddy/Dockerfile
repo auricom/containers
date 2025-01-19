@@ -1,11 +1,7 @@
 FROM cgr.dev/chainguard/wolfi-base:latest@sha256:4f12c90f259bd273ed698660bc983053c5f4d2d2617beb0d481d4ec43d7cbbbd
-
 ARG VERSION
-
 ENV DJANGO_SETTINGS_MODULE=babybuddy.settings.production
-
 WORKDIR /app
-
 RUN \
   apk update && \
   apk add --no-cache \
@@ -43,18 +39,12 @@ RUN \
     glibc-dev \
     openjpeg-dev \
     python3-dev
-
 COPY ./apps/babybuddy/production.py /app/www/public/babybuddy/settings/production.py
 COPY ./apps/babybuddy/entrypoint.sh /entrypoint.sh
-
 RUN \
   chown -R nonroot:nonroot /app && \
   chmod -R u=rwX,go=rX /app
-
 USER nonroot
-
 EXPOSE 3000
-
 VOLUME /config
-
 CMD ["/entrypoint.sh"]
