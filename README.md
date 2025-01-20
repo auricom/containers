@@ -95,6 +95,7 @@ Container | Channel | Image
 [caddy](https://github.com/auricom/pkgs/container/caddy) | stable | ghcr.io/auricom/caddy
 [filebrowser](https://github.com/auricom/pkgs/container/filebrowser) | stable | ghcr.io/auricom/filebrowser
 [freac](https://github.com/auricom/pkgs/container/freac) | stable | ghcr.io/auricom/freac
+[github-notifier](https://github.com/auricom/pkgs/container/github-notifier) | stable | ghcr.io/auricom/github-notifier
 [kresus](https://github.com/auricom/pkgs/container/kresus) | stable | ghcr.io/auricom/kresus
 [kubectl](https://github.com/auricom/pkgs/container/kubectl) | stable | ghcr.io/auricom/kubectl
 [rclone](https://github.com/auricom/pkgs/container/rclone) | stable | ghcr.io/auricom/rclone
