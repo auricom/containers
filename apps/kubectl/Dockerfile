@@ -11,7 +11,8 @@ RUN \
         exiftool \
         fd \
         kubectl-${VERSION}-default \
-        openssh && \
+        openssh \
+        openssl && \
     rm -rf \
         /root/.cache \
         /tmp/*
