@@ -8,7 +8,7 @@ WORKDIR /app
 
 RUN \
   apt-get -qq update && \
-  apt-get -qq install -y curl fd-find nfs-common libgtk-3-0 imagemagick rsync && \
+  apt-get -qq install -y curl fd-find nfs-common libgtk-3-0 imagemagick rsync ca-certificates && \
   curl --silent --location https://github.com/enzo1982/freac/releases/download/v${VERSION}/freac-${VERSION}-linux-x86_64.AppImage --output /app/freac.AppImage && \
   chmod a+x /app/freac.AppImage && \
   /app/freac.AppImage --appimage-extract && \
