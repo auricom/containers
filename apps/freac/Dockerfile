@@ -1,3 +1,4 @@
+# trunk-ignore-all(checkov/CKV_DOCKER_2)
 FROM ubuntu:rolling@sha256:102bc1874fdb136fc2d218473f03cf84135cb7496fefdb9c026c0f553cfe1b6d
 
 ARG VERSION
@@ -6,9 +7,10 @@ USER root
 WORKDIR /app
 
 
+# trunk-ignore(hadolint/DL3008)
 RUN \
   apt-get -qq update && \
-  apt-get -qq install -y curl fd-find nfs-common libgtk-3-0 imagemagick rsync ca-certificates && \
+  apt-get -qq install --no-install-recommends -y curl fd-find nfs-common libgtk-3-0 imagemagick rsync ca-certificates parallel && \
   curl --silent --location https://github.com/enzo1982/freac/releases/download/v${VERSION}/freac-${VERSION}-linux-x86_64.AppImage --output /app/freac.AppImage && \
   chmod a+x /app/freac.AppImage && \
   /app/freac.AppImage --appimage-extract && \
