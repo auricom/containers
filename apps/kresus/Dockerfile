@@ -1,4 +1,4 @@
-FROM ubuntu:rolling@sha256:aadf9a3f5eda81295050d13dabe851b26a67597e424a908f25a63f589dfed48f
+FROM ubuntu:rolling@sha256:79efa276fdefa2ee3911db29b0608f8c0561c347ec3f4d4139980d43b168d991
 
 ARG VERSION
 
