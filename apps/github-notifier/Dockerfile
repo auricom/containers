@@ -1,5 +1,5 @@
 # trunk-ignore-all(checkov/CKV_DOCKER_2)
-FROM cgr.dev/chainguard/wolfi-base:latest@sha256:cdab2937f46d3485a80b1e3b4e4e0dffa510df62c1b2b372c4c047caefd71a2a
+FROM cgr.dev/chainguard/wolfi-base:latest@sha256:3525626232d33ca137d020474cdf7659bc29b3c85b02d46c5ecf766cd72bbc59
 
 USER root
 
