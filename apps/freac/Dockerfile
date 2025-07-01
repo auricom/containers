@@ -11,7 +11,7 @@ WORKDIR /app
 RUN \
   apt-get -qq update && \
   apt-get -qq install --no-install-recommends -y fd-find nfs-common libgtk-3-0 imagemagick rsync ca-certificates parallel wget && \
-  curl --silent --location https://github.com/enzo1982/freac/releases/download/v${VERSION}/freac-${VERSION}-linux-x86_64.AppImage --output /app/freac.AppImage && \
+  wget --quiet https://github.com/enzo1982/freac/releases/download/v${VERSION}/freac-${VERSION}-linux-x86_64.AppImage --output-document=/app/freac.AppImage && \
   chmod a+x /app/freac.AppImage && \
   /app/freac.AppImage --appimage-extract && \
   rm /app/freac.AppImage && \
