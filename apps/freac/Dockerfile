@@ -1,5 +1,5 @@
 # trunk-ignore-all(checkov/CKV_DOCKER_2)
-FROM ubuntu:rolling@sha256:1b22f90d817e4616488d5cfe2f56d8f0262e96d6d6cc06794844c32328e9264c
+FROM ubuntu:rolling@sha256:f7f7af4106ad93e470e4b033aa4251adcf5a751b3cb612d6acf48d5989483ba5
 
 ARG VERSION
 USER root
