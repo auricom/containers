@@ -92,7 +92,6 @@ Each Image will be built with a `rolling` tag, along with tags specific to it's 
 Container | Channel | Image
 --- | --- | ---
 [babybuddy](https://github.com/auricom/pkgs/container/babybuddy) | stable | ghcr.io/auricom/babybuddy
-[caddy](https://github.com/auricom/pkgs/container/caddy) | stable | ghcr.io/auricom/caddy
 [filebrowser](https://github.com/auricom/pkgs/container/filebrowser) | stable | ghcr.io/auricom/filebrowser
 [freac](https://github.com/auricom/pkgs/container/freac) | stable | ghcr.io/auricom/freac
 [github-notifier](https://github.com/auricom/pkgs/container/github-notifier) | stable | ghcr.io/auricom/github-notifier
