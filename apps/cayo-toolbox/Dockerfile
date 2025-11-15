@@ -1,6 +1,6 @@
 # trunk-ignore-all(checkov/CKV_DOCKER_2)
 # trunk-ignore-all(trivy/DS026)
-FROM cgr.dev/chainguard/wolfi-base:latest@sha256:77891a12dc762228955294f2207ee1cbd2b127f18dc7c7458203116288dce828
+FROM cgr.dev/chainguard/wolfi-base:latest@sha256:5c393319e5fd3eeb275f2eda85377633d344328b6f81e8378dc6b36fdd078918
 
 WORKDIR /app
 
