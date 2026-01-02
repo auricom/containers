@@ -1,6 +1,0 @@
-BeautifulSoup4
-simplejson
-pdfminer.six
-Pillow
-PyExecJS
-typing-extensions
