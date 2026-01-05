@@ -7,14 +7,16 @@ ARG VERSION
 
 WORKDIR /app
 
-COPY ./apps/github-notifier/requirements.txt /tmp
+COPY ./apps/python/requirements.txt /tmp
 
 # trunk-ignore(hadolint/DL3018)
 RUN apk update && \
     apk add --no-cache \
         bash \
         build-base \
+        curl \
         gdbm \
+        git \
         glibc \
         glibc-locale-posix \
         icu \

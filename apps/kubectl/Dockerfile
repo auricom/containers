@@ -10,7 +10,7 @@ RUN \
         curl \
         exiftool \
         fd \
-        kubectl-${VERSION}-default \
+        kubernetes \
         openssh \
         openssl && \
     rm -rf \

@@ -1,5 +1,5 @@
 ---
-app: github-notifier
+app: python
 semver: true
 channels:
   - name: stable

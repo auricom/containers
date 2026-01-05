@@ -1,3 +1,0 @@
-python-decouple
-pyyaml
-requests

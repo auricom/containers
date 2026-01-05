@@ -1,0 +1,4 @@
+python-decouple
+pyyaml
+requests
+git+https://github.com/truenas/api_client.git
