@@ -93,8 +93,8 @@ Container | Channel | Image
 --- | --- | ---
 [filebrowser](https://github.com/auricom/pkgs/container/filebrowser) | stable | ghcr.io/auricom/filebrowser
 [freac](https://github.com/auricom/pkgs/container/freac) | stable | ghcr.io/auricom/freac
-[github-notifier](https://github.com/auricom/pkgs/container/github-notifier) | stable | ghcr.io/auricom/github-notifier
 [kubectl](https://github.com/auricom/pkgs/container/kubectl) | stable | ghcr.io/auricom/kubectl
+[python](https://github.com/auricom/pkgs/container/python) | stable | ghcr.io/auricom/python
 [rclone](https://github.com/auricom/pkgs/container/rclone) | stable | ghcr.io/auricom/rclone
 [redlib](https://github.com/auricom/pkgs/container/redlib) | stable | ghcr.io/auricom/redlib
 [resilio-sync](https://github.com/auricom/pkgs/container/resilio-sync) | stable | ghcr.io/auricom/resilio-sync
