@@ -94,6 +94,7 @@ Container | Channel | Image
 [filebrowser](https://github.com/auricom/pkgs/container/filebrowser) | stable | ghcr.io/auricom/filebrowser
 [freac](https://github.com/auricom/pkgs/container/freac) | stable | ghcr.io/auricom/freac
 [kubectl](https://github.com/auricom/pkgs/container/kubectl) | stable | ghcr.io/auricom/kubectl
+[nanobot](https://github.com/auricom/pkgs/container/nanobot) | stable | ghcr.io/auricom/nanobot
 [python](https://github.com/auricom/pkgs/container/python) | stable | ghcr.io/auricom/python
 [rclone](https://github.com/auricom/pkgs/container/rclone) | stable | ghcr.io/auricom/rclone
 [redlib](https://github.com/auricom/pkgs/container/redlib) | stable | ghcr.io/auricom/redlib
