@@ -1,5 +1,5 @@
 ---
-app: nanobot
+app: zeroclaw
 semver: false
 channels:
   - name: stable
