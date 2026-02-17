@@ -5,6 +5,10 @@ FROM cgr.dev/chainguard/rust:latest-dev@sha256:667591dc8dfd00eb8f8ce2d868d3e7147
 
 ARG VERSION
 
+USER root
+
+RUN  mkdir -p /app/target/release && chmod -R 777 /app/target
+
 WORKDIR /repository
 
 RUN git clone --depth 1 --revision "${VERSION}" https://github.com/zeroclaw-labs/zeroclaw.git /repository
@@ -15,21 +19,14 @@ WORKDIR /app
 RUN cp /repository/Cargo.toml /app && \
     cp /repository/Cargo.lock /app
 
-# Create dummy main.rs to build dependencies
-RUN mkdir src && echo "fn main() {}" > src/main.rs
-RUN --mount=type=cache,target=/usr/local/cargo/registry \
-    --mount=type=cache,target=/usr/local/cargo/git \
-    cargo build --release --locked
-RUN rm -rf src
-
 # 2. Copy source code
 RUN cp -r /repository/* /app
-# Touch main.rs to force rebuild
-RUN touch src/main.rs
-RUN --mount=type=cache,target=/usr/local/cargo/registry \
-    --mount=type=cache,target=/usr/local/cargo/git \
+RUN --mount=type=cache,id=zeroclaw-cargo-registry,target=/usr/local/cargo/registry,sharing=locked \
+    --mount=type=cache,id=zeroclaw-cargo-git,target=/usr/local/cargo/git,sharing=locked \
+    --mount=type=cache,id=zeroclaw-target,target=/app/target,sharing=locked \
     cargo build --release --locked && \
-    strip target/release/zeroclaw
+    cp target/release/zeroclaw /app/zeroclaw && \
+    strip /app/zeroclaw
 
 # ── Stage 2: Permissions & Config Prep ───────────────────────
 FROM busybox:1.37@sha256:b3255e7dfbcd10cb367af0d409747d511aeb66dfac98cf30e97e87e4207dd76f AS permissions
@@ -57,7 +54,7 @@ RUN chown -R 65534:65534 /zeroclaw-data
 # ── Stage 3: Production Runtime (Distroless) ─────────────────
 FROM cgr.dev/chainguard/wolfi-base:latest@sha256:b5f4a33fa2fee95dd79535e069bafd60f52085c5786677da5724414374c5194c
 
-COPY --from=builder /app/target/release/zeroclaw /usr/local/bin/zeroclaw
+COPY --from=builder /app/zeroclaw /usr/local/bin/zeroclaw
 COPY --from=permissions /zeroclaw-data /zeroclaw-data
 
 # trunk-ignore(hadolint/DL3018)
