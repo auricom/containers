@@ -60,7 +60,8 @@ COPY --from=permissions /zeroclaw-data /zeroclaw-data
 # trunk-ignore(hadolint/DL3018)
 RUN apk update && \
     apk add --no-cache \
-    git
+        gh \
+        git
 
 # Environment setup
 ENV ZEROCLAW_WORKSPACE=/zeroclaw-data/workspace
