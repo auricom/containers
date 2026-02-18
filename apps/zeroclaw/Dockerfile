@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1@sha256:b6afd42430b15f2d2a4c5a02b919e98a525b785b1aaff16747d2f623364e39b6
 
 # ── Stage 1: Build ────────────────────────────────────────────
-FROM cgr.dev/chainguard/rust:latest-dev@sha256:667591dc8dfd00eb8f8ce2d868d3e71472369700985973c2d51473a3d3e63e6d as builder
+FROM cgr.dev/chainguard/rust:latest-dev@sha256:d2f5e17ac68e2b106f4e075600f40053ccd14c87d2039f65278b2cadb11b137f as builder
 
 ARG VERSION
 
