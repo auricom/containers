@@ -28,19 +28,27 @@ RUN chown -R 65534:65534 /zeroclaw-data
 
 # Download zeroclaw binary
 RUN wget --quiet https://github.com/zeroclaw-labs/zeroclaw/releases/download/v${VERSION}/zeroclaw-x86_64-unknown-linux-gnu.tar.gz --output-document=/tmp/zeroclaw.tar.gz && \
-tar -xvf /tmp/zeroclaw.tar.gz -C /tmp
+    tar -xvf /tmp/zeroclaw.tar.gz -C /tmp && \
+    wget --quiet https://raw.githubusercontent.com/auricom/agents/refs/heads/main/.agent/scripts/requirements.txt --output-document=/tmp/requirements.txt
 
 # ── Stage 2: Production Runtime ─────────────────
 FROM cgr.dev/chainguard/wolfi-base:latest@sha256:c9a27ee8d2d441f941de2f8e4c2c8ddb0b313adb5d14ab934b19f467b9ea8083
 
 COPY --from=permissions /tmp/zeroclaw /usr/local/bin/zeroclaw
+COPY --from=permissions /tmp/requirements.txt /tmp/requirements.txt
 COPY --from=permissions /zeroclaw-data /zeroclaw-data
 
 # trunk-ignore(hadolint/DL3018)
 RUN apk update && \
     apk add --no-cache \
         gh \
-        git
+        git \
+        python3 \
+        uv \
+    && \
+    uv venv && \
+    uv pip install --requirement /tmp/requirements.txt && \
+    rm -r /tmp/requirements.txt
 
 # Environment setup
 ENV ZEROCLAW_WORKSPACE=/zeroclaw-data/workspace
