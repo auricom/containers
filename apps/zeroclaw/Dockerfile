@@ -1,35 +1,10 @@
 # syntax=docker/dockerfile:1@sha256:b6afd42430b15f2d2a4c5a02b919e98a525b785b1aaff16747d2f623364e39b6
 
-# ── Stage 1: Build ────────────────────────────────────────────
-FROM cgr.dev/chainguard/rust:latest-dev@sha256:9d41c4952635794c33b89e9249d68db87adcbb233b1e9e8d08aed3bfa2e9b5cb as builder
+# ── Stage 1: Permissions & Config Prep ───────────────────────
+FROM busybox:1.37@sha256:b3255e7dfbcd10cb367af0d409747d511aeb66dfac98cf30e97e87e4207dd76f AS permissions
 
 ARG VERSION
 
-USER root
-
-RUN  mkdir -p /app/target/release && chmod -R 777 /app/target
-
-WORKDIR /repository
-
-RUN git clone --depth 1 --revision "${VERSION}" https://github.com/zeroclaw-labs/zeroclaw.git /repository
-
-WORKDIR /app
-
-# 1. Copy manifests to cache dependencies
-RUN cp /repository/Cargo.toml /app && \
-    cp /repository/Cargo.lock /app
-
-# 2. Copy source code
-RUN cp -r /repository/* /app
-RUN --mount=type=cache,id=zeroclaw-cargo-registry,target=/usr/local/cargo/registry,sharing=locked \
-    --mount=type=cache,id=zeroclaw-cargo-git,target=/usr/local/cargo/git,sharing=locked \
-    --mount=type=cache,id=zeroclaw-target,target=/app/target,sharing=locked \
-    cargo build --release --locked && \
-    cp target/release/zeroclaw /app/zeroclaw && \
-    strip /app/zeroclaw
-
-# ── Stage 2: Permissions & Config Prep ───────────────────────
-FROM busybox:1.37@sha256:b3255e7dfbcd10cb367af0d409747d511aeb66dfac98cf30e97e87e4207dd76f AS permissions
 # Create directory structure (simplified workspace path)
 RUN mkdir -p /zeroclaw-data/.zeroclaw /zeroclaw-data/workspace
 
@@ -51,10 +26,14 @@ EOF
 
 RUN chown -R 65534:65534 /zeroclaw-data
 
-# ── Stage 3: Production Runtime (Distroless) ─────────────────
-FROM cgr.dev/chainguard/wolfi-base:latest@sha256:9925d3017788558fa8f27e8bb160b791e56202b60c91fbcc5c867de3175986c8
+# Download zeroclaw binary
+RUN wget --quiet https://github.com/zeroclaw-labs/zeroclaw/releases/download/v${VERSION}/zeroclaw-x86_64-unknown-linux-gnu.tar.gz --output-document=/tmp/zeroclaw.tar.gz && \
+tar -xvf /tmp/zeroclaw.tar.gz -C /tmp
 
-COPY --from=builder /app/zeroclaw /usr/local/bin/zeroclaw
+# ── Stage 2: Production Runtime ─────────────────
+FROM cgr.dev/chainguard/wolfi-base:latest@sha256:c9a27ee8d2d441f941de2f8e4c2c8ddb0b313adb5d14ab934b19f467b9ea8083
+
+COPY --from=permissions /tmp/zeroclaw /usr/local/bin/zeroclaw
 COPY --from=permissions /zeroclaw-data /zeroclaw-data
 
 # trunk-ignore(hadolint/DL3018)
