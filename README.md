@@ -92,11 +92,9 @@ Each Image will be built with a `rolling` tag, along with tags specific to it's 
 Container | Channel | Image
 --- | --- | ---
 [freac](https://github.com/auricom/pkgs/container/freac) | stable | ghcr.io/auricom/freac
-[kubectl](https://github.com/auricom/pkgs/container/kubectl) | stable | ghcr.io/auricom/kubectl
-[python](https://github.com/auricom/pkgs/container/python) | stable | ghcr.io/auricom/python
-[rclone](https://github.com/auricom/pkgs/container/rclone) | stable | ghcr.io/auricom/rclone
 [redlib](https://github.com/auricom/pkgs/container/redlib) | stable | ghcr.io/auricom/redlib
 [resilio-sync](https://github.com/auricom/pkgs/container/resilio-sync) | stable | ghcr.io/auricom/resilio-sync
+[toolbox](https://github.com/auricom/pkgs/container/toolbox) | stable | ghcr.io/auricom/toolbox
 [zeroclaw](https://github.com/auricom/pkgs/container/zeroclaw) | stable | ghcr.io/auricom/zeroclaw
 
 
