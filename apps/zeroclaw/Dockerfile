@@ -32,7 +32,7 @@ RUN wget --quiet https://github.com/zeroclaw-labs/zeroclaw/releases/download/v${
     wget --quiet https://raw.githubusercontent.com/auricom/agents/refs/heads/main/.agent/scripts/requirements.txt --output-document=/tmp/requirements.txt
 
 # ── Stage 2: Production Runtime ─────────────────
-FROM cgr.dev/chainguard/wolfi-base:latest@sha256:c9a27ee8d2d441f941de2f8e4c2c8ddb0b313adb5d14ab934b19f467b9ea8083
+FROM cgr.dev/chainguard/wolfi-base:latest@sha256:9925d3017788558fa8f27e8bb160b791e56202b60c91fbcc5c867de3175986c8
 
 COPY --from=permissions /tmp/zeroclaw /usr/local/bin/zeroclaw
 COPY --from=permissions /tmp/requirements.txt /tmp/requirements.txt
