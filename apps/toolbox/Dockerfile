@@ -19,7 +19,7 @@ RUN \
 
 USER nonroot
 
-COPY mise.toml /home/nonroot/.config/mise/config.toml
+COPY apps/toolbox/mise.toml /home/nonroot/.config/mise/config.toml
 
 RUN \
     mise install --yes
