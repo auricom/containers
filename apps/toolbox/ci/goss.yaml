@@ -1,6 +1,4 @@
 ---
 file:
-  /usr/bin/kubectl:
-    exists: true
   /usr/sbin/sshd:
     exists: true

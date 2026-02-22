@@ -1,5 +1,5 @@
 ---
-app: rclone
+app: toolbox
 semver: true
 channels:
   - name: stable

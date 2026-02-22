@@ -1,0 +1,8 @@
+[tools]
+age = "latest"
+fd = "latest"
+gh = "latest"
+kubectl = "latest"
+python = "latest"
+rclone = "latest"
+uv = "latest"
