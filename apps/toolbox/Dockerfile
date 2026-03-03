@@ -2,6 +2,8 @@ FROM cgr.dev/chainguard/wolfi-base:latest@sha256:c11fcfc9f7497a947c2e1fa5d7b5171
 
 ENV MISE_INSTALL_PATH=/usr/local/bin/mise
 
+ENV GUM_VERSION v0.17.0
+
 USER root
 
 RUN \
