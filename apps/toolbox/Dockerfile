@@ -15,7 +15,7 @@ RUN \
         openssh \
         openssl && \
     # Install mise
-    curl https://mise.run | sh && \
+    curl https://mise.run | sh \
     && \
     # Download gum binary
     wget --quiet https://github.com/charmbracelet/gum/releases/download/v${VERSION}/gum_${VERSION}_Linux_x86_64.tar.gz --output-document=/tmp/gum.tar.gz && \
