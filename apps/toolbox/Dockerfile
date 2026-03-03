@@ -18,7 +18,7 @@ RUN \
     curl https://mise.run | sh \
     && \
     # Download gum binary
-    wget --quiet https://github.com/charmbracelet/gum/releases/download/v${VERSION}/gum_${VERSION}_Linux_x86_64.tar.gz --output-document=/tmp/gum.tar.gz && \
+    curl --silent --location https://github.com/charmbracelet/gum/releases/download/v${VERSION}/gum_${VERSION}_Linux_x86_64.tar.gz --output /tmp/gum.tar.gz && \
     tar -xvf /tmp/gum.tar.gz -C /tmp && \
     mv /tmp/gum /usr/local/bin/ \
     && \
