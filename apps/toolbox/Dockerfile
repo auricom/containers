@@ -2,7 +2,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest@sha256:c11fcfc9f7497a947c2e1fa5d7b5171
 
 ENV MISE_INSTALL_PATH=/usr/local/bin/mise
 
-ENV GUM_VERSION v0.17.0
+ENV GUM_VERSION=v0.17.0
 
 USER root
 
@@ -20,7 +20,7 @@ RUN \
     # Download gum binary
     wget --quiet https://github.com/charmbracelet/gum/releases/download/v${VERSION}/gum_${VERSION}_Linux_x86_64.tar.gz --output-document=/tmp/gum.tar.gz && \
     tar -xvf /tmp/gum.tar.gz -C /tmp && \
-    mv /tmp/gum /usr/local/bin/ && \
+    mv /tmp/gum /usr/local/bin/ \
     && \
     rm -rf \
         /root/.cache \
