@@ -25,6 +25,9 @@ RUN \
         openssh \
         openssl
 
+COPY apps/toolbox/mise.toml .
+COPY apps/toolbox/requirements.txt .
+
 RUN \
     # Download Mise
     mkdir -p /usr/local/bin /mise && \
@@ -43,9 +46,15 @@ RUN \
 
 USER nonroot
 
-COPY apps/toolbox/mise.toml /home/nonroot/.config/mise/config.toml
+WORKDIR /home/nonroot
 
 RUN \
-    mise install --yes
-
-CMD [ "cat" ]
+    mise use --yes \
+        age \
+        fd \
+        gh \
+        kubectl \
+        python \
+        rclone \
+        uv && \
+    mise run dependencies

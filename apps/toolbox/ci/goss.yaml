@@ -1,4 +1,81 @@
 ---
 file:
+  # openssh binaries
   /usr/sbin/sshd:
+    exists: true
+  /usr/bin/ssh:
+    exists: true
+  /usr/bin/ssh-keygen:
+    exists: true
+  # mise and gum (downloaded binaries)
+  /usr/local/bin/mise:
+    exists: true
+    mode: "0755"
+  /usr/local/bin/gum:
+    exists: true
+    mode: "0755"
+  # mise directories
+  /mise:
+    exists: true
+    filetype: directory
+  /mise/shims:
+    exists: true
+    filetype: directory
+
+command:
+  # APK-installed tools
+  "bash --version":
+    exit-status: 0
+    stdout:
+      - "GNU bash"
+  "curl --version":
+    exit-status: 0
+    stdout:
+      - "curl"
+  "exiftool -ver":
+    exit-status: 0
+  "git --version":
+    exit-status: 0
+    stdout:
+      - "git version"
+  "openssl version":
+    exit-status: 0
+    stdout:
+      - "OpenSSL"
+  # Downloaded binaries
+  "mise --version":
+    exit-status: 0
+  "gum --version":
+    exit-status: 0
+  # Mise-managed tools (available via /mise/shims in PATH)
+  "age --version":
+    exit-status: 0
+  "fd --version":
+    exit-status: 0
+  "gh --version":
+    exit-status: 0
+    stdout:
+      - "gh version"
+  "kubectl version --client":
+    exit-status: 0
+  "python --version":
+    exit-status: 0
+    stdout:
+      - "Python 3"
+  "rclone --version":
+    exit-status: 0
+    stdout:
+      - "rclone"
+  "uv --version":
+    exit-status: 0
+  # Python packages from requirements.txt
+  "python -c 'import decouple'":
+    exit-status: 0
+  "python -c 'import yaml'":
+    exit-status: 0
+  "python -c 'import requests'":
+    exit-status: 0
+
+user:
+  nonroot:
     exists: true
