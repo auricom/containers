@@ -95,7 +95,6 @@ Container | Channel | Image
 [redlib](https://github.com/auricom/pkgs/container/redlib) | stable | ghcr.io/auricom/redlib
 [resilio-sync](https://github.com/auricom/pkgs/container/resilio-sync) | stable | ghcr.io/auricom/resilio-sync
 [toolbox](https://github.com/auricom/pkgs/container/toolbox) | stable | ghcr.io/auricom/toolbox
-[zeroclaw](https://github.com/auricom/pkgs/container/zeroclaw) | stable | ghcr.io/auricom/zeroclaw
 
 
 ## Deprecations
