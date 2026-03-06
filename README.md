@@ -92,6 +92,7 @@ Each Image will be built with a `rolling` tag, along with tags specific to it's 
 Container | Channel | Image
 --- | --- | ---
 [freac](https://github.com/auricom/pkgs/container/freac) | stable | ghcr.io/auricom/freac
+[prpilot](https://github.com/auricom/pkgs/container/prpilot) | stable | ghcr.io/auricom/prpilot
 [redlib](https://github.com/auricom/pkgs/container/redlib) | stable | ghcr.io/auricom/redlib
 [resilio-sync](https://github.com/auricom/pkgs/container/resilio-sync) | stable | ghcr.io/auricom/resilio-sync
 [toolbox](https://github.com/auricom/pkgs/container/toolbox) | stable | ghcr.io/auricom/toolbox
