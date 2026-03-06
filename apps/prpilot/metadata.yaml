@@ -1,10 +1,10 @@
 ---
-app: feisar-ai-bot
+app: prpilot
 semver: false
 channels:
   - name: stable
     platforms: ["linux/amd64"]
     stable: true
     tests:
-      enabled: true
+      enabled: false
       type: web
