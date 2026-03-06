@@ -49,7 +49,7 @@ USER nonroot
 WORKDIR /home/nonroot
 
 RUN \
-    mise use --yes \
+    mise use --pin --yes \
         age \
         fd \
         gh \
