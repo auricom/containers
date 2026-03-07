@@ -25,9 +25,6 @@ RUN \
         openssh \
         openssl
 
-COPY apps/toolbox/mise.toml .
-COPY apps/toolbox/requirements.txt .
-
 RUN \
     # Download Mise
     mkdir -p /usr/local/bin /mise && \
@@ -36,8 +33,9 @@ RUN \
     && \
     # Download gum binary
     curl --silent --location https://github.com/charmbracelet/gum/releases/download/${GUM_VERSION}/gum_${GUM_VERSION#v}_Linux_x86_64.tar.gz --output /tmp/gum.tar.gz && \
-    tar -xvf /tmp/gum.tar.gz -C /tmp && \
-    mv /tmp/gum_*/gum /usr/local/bin/ \
+    mkdir -p /tmp/gum_extract && \
+    tar -xzf /tmp/gum.tar.gz -C /tmp/gum_extract && \
+    find /tmp/gum_extract -name 'gum' -type f -exec install -m 755 {} /usr/local/bin/gum \; \
     && \
     chown -R nonroot:nonroot /mise && \
     rm -rf \
@@ -48,6 +46,9 @@ USER nonroot
 
 WORKDIR /home/nonroot
 
+COPY apps/toolbox/mise.toml .
+COPY apps/toolbox/requirements.txt .
+
 RUN \
     mise use --pin --yes \
         age \
@@ -57,4 +58,5 @@ RUN \
         python \
         rclone \
         uv && \
-    mise run dependencies
+    mise run dependencies && \
+    rm mise.toml requirements.txt
