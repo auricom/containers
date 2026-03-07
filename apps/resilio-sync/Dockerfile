@@ -1,12 +1,11 @@
 FROM cgr.dev/chainguard/wolfi-base:latest@sha256:00f9662b838432de5f24eabe5dc86f20d1510d158eda1bcaf68bbba8412544cc
 
-ARG VERSION=
+ARG VERSION
 
 WORKDIR /app
 
 # trunk-ignore(hadolint/DL3018)
-RUN apk update && \
-  apk add --no-cache \
+RUN apk add --no-cache \
     libstdc++ \
     tini \
     wget && \

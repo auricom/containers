@@ -1,10 +1,10 @@
 ---
-app: freac
+app: music-transcode
 semver: true
 channels:
   - name: stable
     platforms: ["linux/amd64"]
     stable: true
     tests:
-      enabled: true
+      enabled: false
       type: cli
