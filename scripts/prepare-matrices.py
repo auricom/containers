@@ -63,6 +63,8 @@ def get_published_version(image_name):
         tags = image["metadata"]["container"]["tags"]
         if "rolling" in tags:
             tags.remove("rolling")
+            if not tags:
+                continue
             # Assume the longest string is the complete version number
             return max(tags, key=len)
 
