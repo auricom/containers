@@ -10,7 +10,7 @@ RUN apk add --no-cache \
     grep \
     rsync \
     sed \
-    vips \
-    wget
+    wget \
+    xxhash
 
 WORKDIR /app
