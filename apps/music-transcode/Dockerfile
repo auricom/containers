@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard/wolfi-base:latest@sha256:2a43204178a08b8c7f5e881c550bb52733364beff904ed36eeabe33cc656c749
+FROM cgr.dev/chainguard/wolfi-base:latest@sha256:550e0d6f3b235cd52f141d98594672401adba71642ec367b8874a676ec61ca44
 
 # trunk-ignore(hadolint/DL3018)
 RUN apk add --no-cache \
