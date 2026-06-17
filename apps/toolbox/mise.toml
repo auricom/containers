@@ -5,4 +5,4 @@ lockfile = true
 description = "Install dependencies"
 alias = "d"
 sources = ['requirements.txt']
-run = "uv pip install --system -r requirements.txt"
+run = "uv venv $VIRTUAL_ENV && uv pip install -r requirements.txt"

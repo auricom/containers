@@ -8,12 +8,13 @@ ENV GUM_VERSION=v0.17.0
 # renovate: datasource=github-releases depName=charmbracelet/gum
 ENV MISE_VERSION=v2026.3.2
 
+ENV VIRTUAL_ENV="/home/nonroot/.venv"
 ENV MISE_DATA_DIR="/mise"
 ENV MISE_CONFIG_DIR="/mise"
 ENV MISE_CACHE_DIR="/mise/cache"
 ENV MISE_STATE_DIR="/mise/state"
 ENV MISE_INSTALL_PATH="/usr/local/bin/mise"
-ENV PATH="/mise/shims:$PATH"
+ENV PATH="/home/nonroot/.venv/bin:/mise/shims:$PATH"
 
 USER root
 
@@ -24,7 +25,8 @@ RUN \
         exiftool \
         git \
         openssh \
-        openssl
+        openssl \
+        python3
 
 RUN \
     # Download Mise
@@ -56,7 +58,6 @@ RUN \
         fd \
         gh \
         kubectl \
-        python \
         rclone \
         uv && \
     mise run dependencies && \
