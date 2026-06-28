@@ -5,8 +5,8 @@ ENV MISE_INSTALL_PATH=/usr/local/bin/mise
 # renovate: datasource=github-releases depName=charmbracelet/gum
 ENV GUM_VERSION=v0.17.0
 
-# renovate: datasource=github-releases depName=charmbracelet/gum
-ENV MISE_VERSION=v2026.3.2
+# renovate: datasource=github-releases depName=jdx/mise
+ENV MISE_VERSION=v2026.6.14
 
 ENV VIRTUAL_ENV="/home/nonroot/.venv"
 ENV MISE_DATA_DIR="/mise"
@@ -40,7 +40,7 @@ RUN \
     tar -xzf /tmp/gum.tar.gz -C /tmp/gum_extract && \
     find /tmp/gum_extract -name 'gum' -type f -exec install -m 755 {} /usr/local/bin/gum \; \
     && \
-    chown -R nonroot:nonroot /mise && \
+    chown -R nonroot:nonroot /home/nonroot /mise && \
     rm -rf \
         /root/.cache \
         /tmp/*
