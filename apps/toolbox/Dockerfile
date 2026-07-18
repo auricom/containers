@@ -6,7 +6,7 @@ ENV MISE_INSTALL_PATH=/usr/local/bin/mise
 ENV GUM_VERSION=v0.17.0
 
 # renovate: datasource=github-releases depName=jdx/mise
-ENV MISE_VERSION=v2026.7.0
+ENV MISE_VERSION=v2026.7.7
 
 ENV VIRTUAL_ENV="/home/nonroot/.venv"
 ENV MISE_DATA_DIR="/mise"
