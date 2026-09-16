@@ -3,7 +3,7 @@ FROM cgr.dev/chainguard/wolfi-base:latest@sha256:3754b6da0e1ccdab0fe46abfdd7bbbb
 ENV MISE_INSTALL_PATH=/usr/local/bin/mise
 
 # renovate: datasource=github-releases depName=charmbracelet/gum
-ENV GUM_VERSION=v0.17.0
+ENV GUM_VERSION=v2.0.1
 
 # renovate: datasource=github-releases depName=jdx/mise
 ENV MISE_VERSION=v2026.9.6
