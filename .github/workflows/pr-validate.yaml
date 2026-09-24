@@ -12,15 +12,15 @@ concurrency:
 
 jobs:
   simple-checks:
-    uses: auricom/containers/.github/workflows/simple-checks.yaml@main
+    uses: auricom/containers/.github/workflows/simple-checks.yaml@60139f1456d61d1f6fd09c264ee9651bc0330f08 # main
 
   get-changed-images:
-    uses: auricom/containers/.github/workflows/get-changed-images.yaml@main
+    uses: auricom/containers/.github/workflows/get-changed-images.yaml@60139f1456d61d1f6fd09c264ee9651bc0330f08 # main
 
   build-images:
     needs: ["simple-checks", "get-changed-images"]
     if: ${{ needs.get-changed-images.outputs.addedOrModified == 'true' }}
-    uses: auricom/containers/.github/workflows/build-images.yaml@main
+    uses: auricom/containers/.github/workflows/build-images.yaml@60139f1456d61d1f6fd09c264ee9651bc0330f08 # main
     secrets: inherit
     with:
       appsToBuild: "${{ needs.get-changed-images.outputs.addedOrModifiedImages }}"
