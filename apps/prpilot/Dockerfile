@@ -1,4 +1,4 @@
-FROM ghcr.io/auricom/toolbox:rolling@sha256:1dcb8e5203f06136ee969b7e5178782b14c2a1140a187e6540d6c605ecbd85e5
+FROM ghcr.io/auricom/toolbox:rolling@sha256:e9d6a505c40c237c5f7559b5c84a41d6b3dd0185db60654454098868b0299b78
 
 ARG VERSION
 ARG AGENTS_REPO_URL=https://github.com/auricom/agents.git
