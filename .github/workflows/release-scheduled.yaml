@@ -25,12 +25,12 @@ on:
 jobs:
   simple-checks:
     name: Simple Checks
-    uses: auricom/containers/.github/workflows/simple-checks.yaml@60139f1456d61d1f6fd09c264ee9651bc0330f08 # main
+    uses: auricom/containers/.github/workflows/simple-checks.yaml@c0427932a22d1bd557d2cc2956c4c51abbf086df # main
 
   build-images:
     name: Build Images
     needs: simple-checks
-    uses: auricom/containers/.github/workflows/build-images.yaml@60139f1456d61d1f6fd09c264ee9651bc0330f08 # main
+    uses: auricom/containers/.github/workflows/build-images.yaml@c0427932a22d1bd557d2cc2956c4c51abbf086df # main
     secrets: inherit
     permissions:
       contents: read
