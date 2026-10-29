@@ -49,8 +49,8 @@ USER nonroot
 
 WORKDIR /home/nonroot
 
-COPY apps/toolbox/mise.toml .
-COPY apps/toolbox/requirements.txt .
+COPY mise.toml .
+COPY requirements.txt .
 
 RUN \
     mise use --pin --yes \

@@ -1,28 +1,40 @@
 ---
-name: "Pull Request: Validate"
-
+name: 'Pull Request: Validate'
 on:
   pull_request:
-    branches: ["main"]
-    types: ["opened", "synchronize", "reopened"]
-
+    branches: [main]
+  merge_group:
+permissions:
+  contents: read
 concurrency:
-  group: ${{ github.head_ref }}-pr-validate
-  cancel-in-progress: true
-
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   simple-checks:
-    uses: auricom/containers/.github/workflows/simple-checks.yaml@60139f1456d61d1f6fd09c264ee9651bc0330f08 # main
-
+    uses: ./.github/workflows/simple-checks.yaml
   get-changed-images:
-    uses: auricom/containers/.github/workflows/get-changed-images.yaml@60139f1456d61d1f6fd09c264ee9651bc0330f08 # main
-
+    uses: ./.github/workflows/get-changed-images.yaml
   build-images:
-    needs: ["simple-checks", "get-changed-images"]
-    if: ${{ needs.get-changed-images.outputs.addedOrModified == 'true' }}
-    uses: auricom/containers/.github/workflows/build-images.yaml@60139f1456d61d1f6fd09c264ee9651bc0330f08 # main
-    secrets: inherit
+    needs: get-changed-images
+    if: ${{ needs.get-changed-images.outputs.apps != '[]' }}
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        app: ${{ fromJSON(needs.get-changed-images.outputs.apps) }}
+    uses: ./.github/workflows/app-builder.yaml
     with:
-      appsToBuild: "${{ needs.get-changed-images.outputs.addedOrModifiedImages }}"
-      pushImages: false
-      sendNotifications: false
+      app: ${{ matrix.app }}
+      release: false
+  status:
+    name: Build matrix success
+    if: ${{ always() }}
+    needs: [simple-checks, get-changed-images, build-images]
+    runs-on: ubuntu-26.04
+    permissions: {}
+    steps:
+      - name: Check Results
+        env:
+          RESULTS: ${{ toJSON(needs.*.result) }}
+        run: |
+          jq -e 'all(. != "failure" and . != "cancelled")' <<< "$RESULTS"

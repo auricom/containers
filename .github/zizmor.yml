@@ -1,0 +1,4 @@
+rules:
+  # Keep the documented relative syntax understood by pinned actionlint 1.7.12.
+  self-repository:
+    disable: true

@@ -1,47 +1,38 @@
 ---
-# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: "Get Changed Images"
-
+name: Get Changed Images
 on:
   workflow_call:
+    inputs:
+      app:
+        type: string
+        default: ''
     outputs:
-      addedOrModified:
-        description: "Whether any files were added or modified"
-        value: ${{ jobs.get-changed-images.outputs.addedOrModified }}
-      addedOrModifiedImages:
-        description: "The images that were added or modified"
-        value: ${{ jobs.get-changed-images.outputs.addedOrModifiedImages }}
-
+      apps:
+        description: JSON array of existing apps to build
+        value: ${{ jobs.changed.outputs.apps }}
+permissions:
+  contents: read
 jobs:
-  get-changed-images:
+  changed:
     name: Get Changed Images
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     outputs:
-      addedOrModified: "${{ steps.changed-files.outputs.all_changed_and_modified_files_count > 0 }}"
-      addedOrModifiedImages: "${{ steps.changed-containers.outputs.addedOrModifiedImages }}"
+      apps: ${{ steps.apps.outputs.apps }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-
-      - name: Get Changed Files
-        id: changed-files
-        uses: tj-actions/changed-files@24d32ffd492484c1d75e0c0b894501ddb9d30d62 # v47
-        with:
-          files: apps/**
-          dir_names: true
-          dir_names_max_depth: 2
-          json: true
-          escape_json: false
-
-      - if: ${{ steps.changed-files.outputs.all_changed_and_modified_files_count > 0 }}
-        name: Determine changed images
-        id: changed-containers
-        shell: bash
+          persist-credentials: false
+      - name: Select Apps
+        id: apps
+        env:
+          APP: ${{ inputs.app }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.merge_group.base_sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.event.merge_group.head_sha || github.sha }}
         run: |
-          IMAGES=$( \
-              echo '${{ steps.changed-files.outputs.all_changed_and_modified_files }}' \
-                  | jq --raw-output 'map(sub("^apps/"; "")) | join(",")' \
-          )
-          echo "addedOrModifiedImages=${IMAGES}" >> $GITHUB_OUTPUT
+          if [[ -n "$APP" ]]; then
+            apps=$(python3 scripts/select-apps.py --app "$APP")
+          else
+            apps=$(python3 scripts/select-apps.py --base "$BASE_SHA" --head "$HEAD_SHA")
+          fi
+          echo "apps=$apps" >> "$GITHUB_OUTPUT"

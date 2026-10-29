@@ -1,41 +1,90 @@
 ---
-# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: Release on Merge
-
-concurrency:
-  group: container-release
-  cancel-in-progress: false
-
 on:
   push:
-    branches: ["main"]
+    branches: [main]
     paths:
-      - "apps/**"
-      - "scripts/templates/**"
-      - "!apps/**/metadata.yaml"
-      - "!apps/**/README.md"
-
+      - apps/**
+      - tests/**
+      - go.mod
+      - go.sum
+      - .mise/**
+      - .github/workflows/**
+      - .github/actions/**
+      - scripts/**
+      - Taskfile.yaml
+  workflow_dispatch:
+    inputs:
+      app:
+        description: App to build
+        type: string
+        required: true
+      release:
+        description: Publish the image
+        type: boolean
+        default: false
+      no-cache:
+        description: Disable build cache
+        type: boolean
+        default: false
+permissions:
+  contents: read
 jobs:
   simple-checks:
-    uses: auricom/containers/.github/workflows/simple-checks.yaml@60139f1456d61d1f6fd09c264ee9651bc0330f08 # main
-
+    uses: ./.github/workflows/simple-checks.yaml
   get-changed-images:
-    needs: ["simple-checks"]
-    uses: auricom/containers/.github/workflows/get-changed-images.yaml@60139f1456d61d1f6fd09c264ee9651bc0330f08 # main
-
-  build-images:
-    needs: ["simple-checks", "get-changed-images"]
-    if: ${{ needs.get-changed-images.outputs.addedOrModified == 'true' }}
-    uses: auricom/containers/.github/workflows/build-images.yaml@60139f1456d61d1f6fd09c264ee9651bc0330f08 # main
-    secrets: inherit
+    uses: ./.github/workflows/get-changed-images.yaml
     with:
-      appsToBuild: "${{ needs.get-changed-images.outputs.addedOrModifiedImages }}"
-      pushImages: true
-      sendNotifications: true
-
+      app: ${{ github.event_name == 'workflow_dispatch' && inputs.app || '' }}
+  build-images:
+    needs: [simple-checks, get-changed-images]
+    if: ${{ needs.get-changed-images.outputs.apps != '[]' && (github.event_name == 'push' || inputs.release == true) }}
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        app: ${{ fromJSON(needs.get-changed-images.outputs.apps) }}
+    uses: ./.github/workflows/app-builder.yaml
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    with:
+      app: ${{ matrix.app }}
+      release: true
+      no-cache: ${{ inputs.no-cache == true }}
+  test-images:
+    needs: [simple-checks, get-changed-images]
+    if: ${{ github.event_name == 'workflow_dispatch' && !inputs.release && needs.get-changed-images.outputs.apps != '[]' }}
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        app: ${{ fromJSON(needs.get-changed-images.outputs.apps) }}
+    uses: ./.github/workflows/app-builder.yaml
+    permissions:
+      contents: read
+    with:
+      app: ${{ matrix.app }}
+      release: false
+      no-cache: ${{ inputs.no-cache == true }}
   render-readme:
-    name: Render Readme
-    needs: build-images
-    if: ${{ always() && needs.build-images.result != 'failure' }}
-    uses: auricom/containers/.github/workflows/render-readme.yaml@60139f1456d61d1f6fd09c264ee9651bc0330f08 # main
-    secrets: inherit
+    needs: [simple-checks, get-changed-images, build-images]
+    if: ${{ !cancelled() && github.event_name == 'push' && needs.simple-checks.result == 'success' && needs.get-changed-images.result == 'success' && needs.build-images.result != 'failure' && needs.build-images.result != 'cancelled' }}
+    uses: ./.github/workflows/render-readme.yaml
+    permissions:
+      contents: write
+  status:
+    name: Build matrix success
+    if: ${{ always() }}
+    needs: [simple-checks, get-changed-images, build-images, test-images, render-readme]
+    runs-on: ubuntu-26.04
+    permissions: {}
+    steps:
+      - name: Check Results
+        env:
+          RESULTS: ${{ toJSON(needs.*.result) }}
+        run: |
+          jq -e 'all(. != "failure" and . != "cancelled")' <<< "$RESULTS"

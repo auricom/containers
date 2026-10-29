@@ -1,25 +1,31 @@
-FROM cgr.dev/chainguard/wolfi-base:latest@sha256:dbcc3a4a3b1b9e68420a4742940aa6267c97e61811736a5fef0918a06ade1827
+FROM cgr.dev/chainguard/wolfi-base:latest@sha256:dbcc3a4a3b1b9e68420a4742940aa6267c97e61811736a5fef0918a06ade1827 AS download
 
-ARG VERSION
+ARG PACKAGE_VERSION
+ARG PACKAGE_SHA256
+
+RUN apk add --no-cache binutils curl xz && \
+    curl --fail --silent --show-error --location \
+      "https://linux-packages.resilio.com/resilio-sync/deb/pool/non-free/r/resilio-sync/resilio-sync_${PACKAGE_VERSION}_amd64.deb" \
+      --output /tmp/resilio.deb && \
+    echo "${PACKAGE_SHA256}  /tmp/resilio.deb" | sha256sum -c - && \
+    mkdir /extract && cd /extract && \
+    ar x /tmp/resilio.deb && \
+    tar -xf data.tar.* ./usr/bin/rslsync
+
+FROM cgr.dev/chainguard/wolfi-base:latest@sha256:dbcc3a4a3b1b9e68420a4742940aa6267c97e61811736a5fef0918a06ade1827
 
 WORKDIR /app
 
 # trunk-ignore(hadolint/DL3018)
-RUN apk add --no-cache \
-    libstdc++ \
-    tini \
-    wget && \
-  wget --quiet --output-document /tmp/sync.tgz \
-  https://download-cdn.resilio.com/stable/linux/x64/0/resilio-sync_x64.tar.gz && \
-    tar -xf /tmp/sync.tgz -C /app rslsync && rm -f /tmp/sync.tgz && \
-  apk del wget && \
+RUN apk add --no-cache libstdc++ tini && \
     mkdir -p /config /sync && \
-  chown -R nonroot:nonroot /app /config /sync && \
-  chmod -R u=rwX,go=rX /app /config /sync
+    chown -R nonroot:nonroot /app /config /sync && \
+    chmod -R u=rwX,go=rX /app /config /sync
+
+COPY --from=download --chmod=755 /extract/usr/bin/rslsync /app/rslsync
+COPY sync.conf /app/sync.conf
 
 USER nonroot
-
-COPY ./apps/resilio-sync/sync.conf /app/sync.conf
 
 EXPOSE 8888/tcp
 EXPOSE 55555/tcp

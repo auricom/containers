@@ -1,0 +1,212 @@
+---
+name: App Builder
+on:
+  workflow_call:
+    inputs:
+      app:
+        description: App name
+        type: string
+        required: true
+      release:
+        description: Publish image and provenance
+        type: boolean
+        required: true
+      no-cache:
+        description: Disable build cache
+        type: boolean
+        default: false
+concurrency:
+  group: app-builder-${{ inputs.app }}-${{ inputs.release && 'release' || github.run_id }}
+  cancel-in-progress: false
+# Build inherits caller permissions: read-only for PRs, package writes for releases.
+jobs:
+  plan:
+    name: Plan
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: read
+    outputs:
+      platforms: ${{ steps.options.outputs.platforms }}
+      version: ${{ steps.options.outputs.version }}
+      owner: ${{ steps.owner.outputs.owner }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/app-options
+        id: options
+        with:
+          app: ${{ inputs.app }}
+      - name: Normalize Owner
+        id: owner
+        run: echo "owner=${GITHUB_REPOSITORY_OWNER,,}" >> "$GITHUB_OUTPUT"
+      - name: Build Image Metadata
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        env:
+          DOCKER_METADATA_ANNOTATIONS_LEVELS: manifest,index
+        with:
+          flavor: latest=false
+          images: ghcr.io/${{ steps.owner.outputs.owner }}/${{ inputs.app }}
+          tags: |
+            type=semver,pattern={{version}},value=${{ steps.options.outputs.semantic }},enable=${{ inputs.release && steps.options.outputs.versioned == 'true' }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ steps.options.outputs.semantic }},enable=${{ inputs.release && steps.options.outputs.versioned == 'true' }}
+            type=semver,pattern={{major}},value=${{ steps.options.outputs.semantic }},enable=${{ inputs.release && steps.options.outputs.versioned == 'true' }}
+            type=raw,value=${{ steps.options.outputs.version }},enable=${{ inputs.release && steps.options.outputs.versioned == 'true' }}
+            type=raw,value=rolling,enable=${{ inputs.release }}
+            type=raw,value=sandbox,enable=${{ !inputs.release }}
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ${{ inputs.app }}-bake-metadata
+          path: ${{ steps.meta.outputs.bake-file }}
+          if-no-files-found: error
+          retention-days: 1
+  build:
+    name: Build/Test (${{ matrix.platform }})
+    needs: plan
+    runs-on: ${{ startsWith(matrix.platform, 'linux/arm') && 'ubuntu-26.04-arm' || 'ubuntu-26.04' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: ${{ fromJSON(needs.plan.outputs.platforms) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Get Target Architecture
+        id: target
+        env:
+          PLATFORM: ${{ matrix.platform }}
+        run: echo "arch=${PLATFORM##*/}" >> "$GITHUB_OUTPUT"
+      - name: Login to GHCR
+        if: ${{ inputs.release }}
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: ${{ inputs.app }}-bake-metadata
+          path: ${{ runner.temp }}
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - name: Build App
+        id: bake
+        uses: docker/bake-action@59cb1203cd42bcefd40a1b6d73b589e48c86040e # v7.5.0
+        with:
+          source: ./apps/${{ inputs.app }}
+          targets: image
+          files: |
+            ./docker-bake.hcl
+            cwd://${{ runner.temp }}/docker-metadata-action-bake.json
+          set: |
+            *.platform=${{ matrix.platform }}
+            *.cache-from=type=registry,ref=ghcr.io/${{ needs.plan.outputs.owner }}/build_cache:${{ inputs.app }}-${{ steps.target.outputs.arch }}
+            *.cache-to=${{ inputs.release && format('type=registry,ref=ghcr.io/{0}/build_cache:{1}-{2},mode=max,compression=zstd,force-compression=true', needs.plan.outputs.owner, inputs.app, steps.target.outputs.arch) || '' }}
+            *.no-cache=${{ inputs.no-cache }}
+            *.labels.org.opencontainers.image.title=${{ inputs.app }}
+            *.labels.org.opencontainers.image.url=https://ghcr.io/${{ needs.plan.outputs.owner }}/${{ inputs.app }}
+            *.labels.org.opencontainers.image.version=${{ needs.plan.outputs.version }}
+            *.labels.org.opencontainers.image.revision=${{ github.sha }}
+            *.labels.org.opencontainers.image.vendor=${{ needs.plan.outputs.owner }}
+            *.output=${{ inputs.release && format('type=image,name=ghcr.io/{0}/{1},push-by-digest=true,name-canonical=true,push=true,compression=zstd,force-compression=true', needs.plan.outputs.owner, inputs.app) || 'type=docker' }}
+            *.tags=${{ !inputs.release && format('ghcr.io/{0}/{1}:sandbox', needs.plan.outputs.owner, inputs.app) || '' }}
+      - name: Setup Go
+        if: ${{ !inputs.release }}
+        uses: jdx/mise-action@82a612c5ab8bcda7cc5db6b7e81a8e7584c3dc6e # v5.2.3
+        with:
+          install_args: --locked go
+      - name: Run Container Tests
+        if: ${{ !inputs.release }}
+        env:
+          APP: ${{ inputs.app }}
+          TEST_IMAGE: ghcr.io/${{ needs.plan.outputs.owner }}/${{ inputs.app }}:sandbox
+        run: go test -count=1 -v -timeout 5m "./apps/$APP/..."
+      - name: Export Digest
+        if: ${{ inputs.release }}
+        env:
+          METADATA: ${{ steps.bake.outputs.metadata }}
+        run: |
+          digest=$(jq -er '.image["containerimage.digest"]' <<< "$METADATA")
+          [[ "$digest" =~ ^sha256:[a-f0-9]{64}$ ]]
+          mkdir -p "$RUNNER_TEMP/digests"
+          touch "$RUNNER_TEMP/digests/${digest#sha256:}"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: ${{ inputs.release }}
+        with:
+          name: ${{ inputs.app }}-digests-${{ steps.target.outputs.arch }}
+          path: ${{ runner.temp }}/digests/*
+          if-no-files-found: error
+          retention-days: 1
+  merge:
+    name: Merge
+    if: ${{ inputs.release }}
+    needs: [plan, build]
+    runs-on: ubuntu-26.04
+    outputs:
+      digest: ${{ steps.merge.outputs.digest }}
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: ${{ inputs.app }}-bake-metadata
+          path: ${{ runner.temp }}
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: ${{ inputs.app }}-digests-*
+          path: ${{ runner.temp }}/digests
+          merge-multiple: true
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: Merge and Inspect Manifest
+        id: merge
+        working-directory: ${{ runner.temp }}/digests
+        env:
+          IMAGE: ghcr.io/${{ needs.plan.outputs.owner }}/${{ inputs.app }}
+          PLATFORMS: ${{ needs.plan.outputs.platforms }}
+        run: |
+          shopt -s nullglob
+          digests=(*)
+          [[ ${#digests[@]} -eq $(jq length <<< "$PLATFORMS") ]]
+          args=()
+          while IFS= read -r tag; do
+            args+=(-t "$tag")
+          done < <(jq -r '.target["docker-metadata-action"].tags[]' "$RUNNER_TEMP/docker-metadata-action-bake.json")
+          for digest in "${digests[@]}"; do
+            [[ "$digest" =~ ^[a-f0-9]{64}$ ]]
+            args+=("$IMAGE@sha256:$digest")
+          done
+          docker buildx imagetools create "${args[@]}"
+          digest=$(docker buildx imagetools inspect "$IMAGE:rolling" --format '{{json .Manifest}}' | jq -er '.digest')
+          echo "digest=$digest" >> "$GITHUB_OUTPUT"
+  attest:
+    name: Attest
+    if: ${{ inputs.release }}
+    needs: [plan, merge]
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4.7.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: Upload Dependency Snapshot
+        uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
+        with:
+          dependency-snapshot: true
+          image: ghcr.io/${{ needs.plan.outputs.owner }}/${{ inputs.app }}@${{ needs.merge.outputs.digest }}
+      - name: Attest Provenance
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          push-to-registry: true
+          subject-name: ghcr.io/${{ needs.plan.outputs.owner }}/${{ inputs.app }}
+          subject-digest: ${{ needs.merge.outputs.digest }}
+      - name: Verify Attestation
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          IMAGE: ghcr.io/${{ needs.plan.outputs.owner }}/${{ inputs.app }}@${{ needs.merge.outputs.digest }}
+        run: gh attestation verify --repo "$REPO" "oci://$IMAGE"

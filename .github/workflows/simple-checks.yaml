@@ -1,36 +1,31 @@
 ---
-# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: "Simple Checks"
-
+name: Simple Checks
 on:
   workflow_call:
-
+permissions:
+  contents: read
 jobs:
-  metadata-validation:
-    name: Validate Image Metadata
-    runs-on: ubuntu-latest
+  checks:
+    name: Compile, Vet and Lint
+    runs-on: ubuntu-26.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          fetch-depth: 0
-
-      - name: Get Changed Files
-        id: changed-files
-        uses: tj-actions/changed-files@24d32ffd492484c1d75e0c0b894501ddb9d30d62 # v47
+          persist-credentials: false
+      - uses: jdx/mise-action@82a612c5ab8bcda7cc5db6b7e81a8e7584c3dc6e # v5.2.3
         with:
-          files_yaml: |
-            cue:
-              - metadata.rules.cue
-              - apps/**/metadata.yaml
-
-      - name: Setup CUE
-        if: ${{ steps.changed-files.outputs.cue_any_changed == 'true' }}
-        uses: cue-lang/setup-cue@b0e30e540a2dae47304ebf16586a5b2db023b61c # v2.0.0
-
-      # Run against all files to ensure they are tested if the cue schema is changed.
-      - name: Validate image metadata
-        if: ${{ steps.changed-files.outputs.cue_any_changed == 'true' }}
-        shell: bash
+          install_args: --locked
+      - run: go test -run='^$' ./...
+      - run: go vet ./...
+      - run: python3 -m unittest discover -s scripts -p 'test_*.py'
+      - run: actionlint
+      - run: zizmor --offline .github
+      - name: Validate Bake Definitions
         run: |
-          find ./apps/ -name metadata.yaml | xargs -I {} cue vet --schema '#Spec' {} ./metadata.rules.cue
+          for app in apps/*; do
+            (cd "$app" && docker buildx bake image-all --print)
+          done
+      - name: Check Generated README
+        run: |
+          python3 scripts/render-readme.py
+          git diff --exit-code -- README.md

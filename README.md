@@ -89,14 +89,36 @@ For applications that need to have persistent configuration data the config volu
 
 Each Image will be built with a `rolling` tag, along with tags specific to it's version. Available Images Below
 
-Container | Channel | Image
+Container | Platforms | Image
 --- | --- | ---
-[music-transcode](https://github.com/auricom/pkgs/container/music-transcode) | stable | ghcr.io/auricom/music-transcode
-[prpilot](https://github.com/auricom/pkgs/container/prpilot) | stable | ghcr.io/auricom/prpilot
-[redlib](https://github.com/auricom/pkgs/container/redlib) | stable | ghcr.io/auricom/redlib
-[resilio-sync](https://github.com/auricom/pkgs/container/resilio-sync) | stable | ghcr.io/auricom/resilio-sync
-[toolbox](https://github.com/auricom/pkgs/container/toolbox) | stable | ghcr.io/auricom/toolbox
+[music-transcode](https://github.com/auricom/containers/pkgs/container/music-transcode) | linux/amd64 | ghcr.io/auricom/music-transcode
+[resilio-sync](https://github.com/auricom/containers/pkgs/container/resilio-sync) | linux/amd64 | ghcr.io/auricom/resilio-sync
+[toolbox](https://github.com/auricom/containers/pkgs/container/toolbox) | linux/amd64 | ghcr.io/auricom/toolbox
 
+## Build, test, and release
+
+Install Docker with the Buildx plugin, Mise, Python 3, and Task. Run `mise install --locked` to install the pinned Go and workflow lint tools.
+
+```sh
+task APP=toolbox build
+task APP=toolbox test
+task check
+task render-readme
+```
+
+Each app's `docker-bake.hcl` defines its version and supported platforms. Keep the generated inventory current when adding or removing apps. Toolbox and music-transcode use `rolling`; Resilio uses an exact upstream package version and checksum. Renovate can propose Resilio package updates; update `PACKAGE_SHA256` alongside `PACKAGE_VERSION` (`VERSION` is derived from it) from the vendor's Debian package index.
+
+Pull requests and merge-queue runs build and test changed apps without publishing. Shared CI or test changes validate all apps. Main-branch changes publish affected images with `rolling` and, for versioned apps, version tags. Scheduled discovery is retired; update committed build inputs to release new versions.
+
+For a manual build, select **Release on Merge** in GitHub Actions, provide one app name, and leave `release` unchecked to build and test without publishing. Enable `release` to publish; enable `no-cache` to bypass cached build layers. Published builds export per-architecture registry caches, assemble the manifest, submit an SBOM dependency snapshot, and attest the final digest. Container smoke tests run on non-publishing builds before merge.
+
+Verify a published image using:
+
+```sh
+gh attestation verify --repo auricom/containers oci://ghcr.io/auricom/toolbox:rolling
+```
+
+After migrating CI, run a manual release and inspect its manifest, dependency snapshot, and attestation. The aggregate required check remains named `Build matrix success`.
 
 ## Deprecations
 

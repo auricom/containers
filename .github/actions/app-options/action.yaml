@@ -1,0 +1,44 @@
+---
+name: App Options
+description: Read validated application build options from Docker Bake
+inputs:
+  app:
+    description: App name
+    required: true
+outputs:
+  platforms:
+    description: JSON array of platforms
+    value: ${{ steps.options.outputs.platforms }}
+  version:
+    description: Committed upstream version
+    value: ${{ steps.options.outputs.version }}
+  semantic:
+    description: Three-component semantic version, if applicable
+    value: ${{ steps.options.outputs.semantic }}
+  versioned:
+    description: Whether the app has a numeric version
+    value: ${{ steps.options.outputs.versioned }}
+runs:
+  using: composite
+  steps:
+    - name: Read Bake Options
+      id: options
+      shell: bash
+      env:
+        APP: ${{ inputs.app }}
+      run: |
+        [[ "$APP" =~ ^[a-z0-9][a-z0-9_-]*$ && -f "apps/$APP/docker-bake.hcl" ]]
+        cd "apps/$APP"
+        options=$(docker buildx bake image-all --print)
+        platforms=$(jq -ce '.target["image-all"].platforms | select(length > 0) | select(all(. == "linux/amd64" or . == "linux/arm64"))' <<< "$options")
+        version=$(jq -er '.target["image-all"].args.VERSION | select(test("^[a-zA-Z0-9_][a-zA-Z0-9_.-]{0,127}$"))' <<< "$options")
+        semantic=''
+        versioned=false
+        if [[ "$version" =~ ^v?([0-9]+)\.([0-9]+)\.([0-9]+)(\.[0-9]+)?$ ]]; then
+          semantic="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.${BASH_REMATCH[3]}"
+          versioned=true
+        fi
+        echo "platforms=$platforms" >> "$GITHUB_OUTPUT"
+        echo "version=$version" >> "$GITHUB_OUTPUT"
+        echo "semantic=$semantic" >> "$GITHUB_OUTPUT"
+        echo "versioned=$versioned" >> "$GITHUB_OUTPUT"

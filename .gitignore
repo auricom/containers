@@ -1,2 +1,3 @@
-.goss
 .private
+.cache/
+__pycache__/
