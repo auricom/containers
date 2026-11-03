@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard/wolfi-base:latest@sha256:629d9acaceda7746cd9293365eb0d8e8fabf74e91830b05470cfbee20b53f447 AS download
+FROM cgr.dev/chainguard/wolfi-base:latest AS download
 
 ARG PACKAGE_VERSION
 ARG PACKAGE_SHA256
@@ -12,7 +12,7 @@ RUN apk add --no-cache binutils curl xz && \
     ar x /tmp/resilio.deb && \
     tar -xf data.tar.* ./usr/bin/rslsync
 
-FROM cgr.dev/chainguard/wolfi-base:latest@sha256:629d9acaceda7746cd9293365eb0d8e8fabf74e91830b05470cfbee20b53f447
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 WORKDIR /app
 

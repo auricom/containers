@@ -1,5 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "packageRules": [
+    {
+      "matchDatasources": ["docker"],
+      "pinDigests": false
+    }
+  ],
   "customManagers": [
     {
       "customType": "regex",
