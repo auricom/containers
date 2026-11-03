@@ -13,6 +13,8 @@ on:
       - .github/actions/**
       - scripts/**
       - Taskfile.yaml
+  schedule:
+    - cron: '0 3 1 * *'
   workflow_dispatch:
     inputs:
       app:
@@ -38,7 +40,7 @@ jobs:
       app: ${{ github.event_name == 'workflow_dispatch' && inputs.app || '' }}
   build-images:
     needs: [simple-checks, get-changed-images]
-    if: ${{ needs.get-changed-images.outputs.apps != '[]' && (github.event_name == 'push' || inputs.release == true) }}
+    if: ${{ needs.get-changed-images.outputs.apps != '[]' && (github.event_name != 'workflow_dispatch' || inputs.release == true) }}
     strategy:
       fail-fast: false
       max-parallel: 4
@@ -54,7 +56,7 @@ jobs:
     with:
       app: ${{ matrix.app }}
       release: true
-      no-cache: ${{ inputs.no-cache == true }}
+      no-cache: ${{ github.event_name == 'schedule' || inputs.no-cache == true }}
   test-images:
     needs: [simple-checks, get-changed-images]
     if: ${{ github.event_name == 'workflow_dispatch' && !inputs.release && needs.get-changed-images.outputs.apps != '[]' }}

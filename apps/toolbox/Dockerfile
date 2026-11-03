@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard/wolfi-base:latest@sha256:629d9acaceda7746cd9293365eb0d8e8fabf74e91830b05470cfbee20b53f447
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ENV MISE_INSTALL_PATH=/usr/local/bin/mise
 
