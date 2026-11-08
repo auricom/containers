@@ -1,12 +1,12 @@
-FROM cgr.dev/chainguard/wolfi-base:latest@sha256:dbcc3a4a3b1b9e68420a4742940aa6267c97e61811736a5fef0918a06ade1827
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 ENV MISE_INSTALL_PATH=/usr/local/bin/mise
 
 # renovate: datasource=github-releases depName=charmbracelet/gum
-ENV GUM_VERSION=v2.0.1
+ENV GUM_VERSION=v2.0.2
 
 # renovate: datasource=github-releases depName=jdx/mise
-ENV MISE_VERSION=v2026.9.12
+ENV MISE_VERSION=v2026.11.1
 
 ENV VIRTUAL_ENV="/home/nonroot/.venv"
 ENV MISE_DATA_DIR="/mise"

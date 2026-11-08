@@ -7,12 +7,14 @@ import subprocess
 from pathlib import Path
 
 
-def select_apps(files, available, requested=None):
+def select_apps(files, available, requested=None, bake_only=False):
     available = set(available)
     if requested is not None:
         if not re.fullmatch(r"[a-z0-9][a-z0-9_-]*", requested) or requested not in available:
             raise ValueError(f"Unknown app: {requested}")
         return [requested]
+    if bake_only:
+        files = [path for path in files if re.fullmatch(r"apps/[^/]+/docker-bake\.hcl", path)]
     shared = (".github/workflows/", ".github/actions/", "tests/", ".mise/")
     if any(path.startswith(shared) or path in {"go.mod", "go.sum", "Taskfile.yaml", "scripts/select-apps.py"} for path in files):
         return sorted(available)
@@ -22,6 +24,7 @@ def select_apps(files, available, requested=None):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--app")
+    parser.add_argument("--bake-only", action="store_true", help="only docker-bake.hcl changes select an app")
     parser.add_argument("--base", default="")
     parser.add_argument("--head", default="HEAD")
     args = parser.parse_args()
@@ -33,4 +36,4 @@ if __name__ == "__main__":
         else:
             command = ["git", "diff", "--no-renames", "--name-only", "-z", args.base, args.head, "--"]
         files = subprocess.check_output(command).decode().split("\0")
-    print(json.dumps(select_apps(files, available, args.app)))
+    print(json.dumps(select_apps(files, available, args.app, args.bake_only)))
