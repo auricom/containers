@@ -22,6 +22,11 @@ class SelectionTests(unittest.TestCase):
         for files in [[], ["README.md", "scripts/templates/README.md.j2"]]:
             self.assertEqual(module.select_apps(files, self.apps), [])
 
+    def test_bake_only_ignores_everything_but_bake_files(self):
+        files = ["apps/toolbox/Dockerfile", ".github/workflows/app-builder.yaml", "apps/resilio-sync/docker-bake.hcl"]
+        self.assertEqual(module.select_apps(files, self.apps, bake_only=True), ["resilio-sync"])
+        self.assertEqual(module.select_apps(files[:2], self.apps, bake_only=True), [])
+
     def test_manual_selection(self):
         self.assertEqual(module.select_apps([], self.apps, "toolbox"), ["toolbox"])
         for app in ["", "removed", "../toolbox", "toolbox resilio-sync"]:
